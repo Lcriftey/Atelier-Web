@@ -1,18 +1,26 @@
 const featuredProducts = [
   {
     id: 'obra-01',
+    nombre: 'Materia en calma',
     name: 'Materia en calma',
     image:
       'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&w=900&q=85',
     alt: 'Pintura abstracta con tonos cálidos y azules',
     price: '$ 1.200.000 COP',
+    precio: 1200000,
     availability: 'Disponible',
     technique: 'Óleo sobre lienzo',
+    artisticDescription: 'Una pieza original de atmósfera serena, donde el color se desplaza lentamente entre capas de memoria y luz.',
+    technicalDescription: 'Óleo sobre lienzo, trabajado en capas con pigmentos de baja saturación.',
+    dimensions: '80 × 100 cm',
+    published: '2026',
     description: 'Una pieza original de atmósfera serena.',
-    href: '#obra-01',
+    images: ['https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&w=1200&q=88', 'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&w=900&q=85'],
+    href: '#obra/obra-01',
   },
   {
     id: 'obra-02',
+    nombre: 'Luz de taller',
     name: 'Luz de taller',
     image:
       'https://images.unsplash.com/photo-1549490349-8643362247b5?auto=format&fit=crop&w=900&q=85',
@@ -21,10 +29,16 @@ const featuredProducts = [
     availability: 'Disponible',
     technique: 'Acrílico sobre tabla',
     description: 'Texturas y contrastes nacidos del proceso.',
-    href: '#obra-02',
+    artisticDescription: 'La luz que queda después de una jornada de trabajo: una composición de texturas, contrastes y pequeñas revelaciones.',
+    technicalDescription: 'Acrílico sobre tabla con intervención de pigmento mineral.',
+    dimensions: '70 × 90 cm',
+    published: '2026',
+    images: ['https://images.unsplash.com/photo-1549490349-8643362247b5?auto=format&fit=crop&w=1200&q=88', 'https://images.unsplash.com/photo-1549490349-8643362247b5?auto=format&fit=crop&w=900&q=85'],
+    href: '#obra/obra-02',
   },
   {
     id: 'obra-03',
+    nombre: 'Paisaje interior',
     name: 'Paisaje interior',
     image:
       'https://images.unsplash.com/photo-1577083552431-6e5fd01988a5?auto=format&fit=crop&w=900&q=85',
@@ -33,10 +47,16 @@ const featuredProducts = [
     availability: 'Consultar',
     technique: 'Técnica mixta',
     description: 'Una exploración visual sobre memoria y espacio.',
-    href: '#obra-03',
+    artisticDescription: 'Una exploración visual sobre memoria y espacio, construida desde una mirada íntima hacia el paisaje.',
+    technicalDescription: 'Técnica mixta sobre lienzo de algodón.',
+    dimensions: '90 × 120 cm',
+    published: '2025',
+    images: ['https://images.unsplash.com/photo-1577083552431-6e5fd01988a5?auto=format&fit=crop&w=1200&q=88', 'https://images.unsplash.com/photo-1577083552431-6e5fd01988a5?auto=format&fit=crop&w=900&q=85'],
+    href: '#obra/obra-03',
   },
   {
     id: 'obra-04',
+    nombre: 'Ritmo azul',
     name: 'Ritmo azul',
     image:
       'https://images.unsplash.com/photo-1547891654-e66ed7ebb968?auto=format&fit=crop&w=900&q=85',
@@ -45,7 +65,12 @@ const featuredProducts = [
     availability: 'Disponible',
     technique: 'Óleo y pigmento',
     description: 'Una obra de gesto amplio y color profundo.',
-    href: '#obra-04',
+    artisticDescription: 'Una obra de gesto amplio y color profundo. El azul aparece como movimiento, pausa y resonancia.',
+    technicalDescription: 'Óleo y pigmento sobre lienzo preparado a mano.',
+    dimensions: '60 × 80 cm',
+    published: '2025',
+    images: ['https://images.unsplash.com/photo-1547891654-e66ed7ebb968?auto=format&fit=crop&w=1200&q=88', 'https://images.unsplash.com/photo-1547891654-e66ed7ebb968?auto=format&fit=crop&w=900&q=85'],
+    href: '#obra/obra-04',
   },
 ];
 

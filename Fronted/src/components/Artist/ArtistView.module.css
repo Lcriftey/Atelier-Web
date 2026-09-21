@@ -1,0 +1,97 @@
+.page {
+  margin: 0 auto;
+  max-width: 94rem;
+  padding: clamp(2.5rem, 7vw, 7rem) clamp(1.25rem, 6vw, 6rem) 7rem;
+}
+
+.eyebrow {
+  color: var(--color-gold-dark);
+  font-size: clamp(0.78rem, 0.8vw, 0.92rem);
+  letter-spacing: 0.2em;
+  margin: 0 0 1.15rem;
+  text-transform: uppercase;
+}
+
+.mosaicTile h2 {
+  color: var(--color-navy);
+  font-size: clamp(1.8rem, 3vw, 3.2rem);
+  font-weight: 500;
+  line-height: 1;
+  margin: 0;
+}
+
+.mission {
+  border: 4px solid var(--color-gold);
+  margin: 0 10px;
+  padding: clamp(1rem, 2vw, 2rem) clamp(1.25rem, 8vw, 8rem);
+  text-align: center;
+}
+
+.mission blockquote {
+  color: var(--color-navy);
+  font-size: clamp(1.4rem, 2.4vw, 2.8rem);
+  line-height: 1.15;
+  margin: 0 auto;
+  max-width: 58rem;
+}
+
+.mosaic {
+  align-items: stretch;
+  display: grid;
+  gap: clamp(2rem, 5vw, 5rem);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: clamp(2rem, 4.5vw, 4.5rem);
+}
+
+.mosaicTile {
+  border-top: 1px solid rgba(200, 164, 90, 0.7);
+  display: flex;
+  flex-direction: column;
+  padding-top: 1.25rem;
+}
+
+.mosaicTile img {
+  aspect-ratio: 5 / 3;
+  display: block;
+  margin: 1.5rem 0 0;
+  object-fit: cover;
+  width: 100%;
+}
+
+.mosaicTile > p:not(.eyebrow),
+.mosaicTile h2 + p {
+  color: var(--color-ink);
+  font-size: clamp(1rem, 1.2vw, 1.14rem);
+  line-height: 1.75;
+  margin: 1.25rem 0 0;
+}
+
+.mosaicTrajectory { margin-top: 3rem; }
+.mosaicTechnique { margin-top: 0; }
+.mosaicExperience { margin-top: 5rem; }
+.mosaicProposal { margin-top: 2rem; }
+
+.techniques {
+  color: var(--color-ink);
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  list-style: disc;
+  margin: 1.75rem 0 0;
+  padding: 0 0 0 1.25rem;
+  text-transform: uppercase;
+}
+
+.techniques li {
+  padding: 0.35rem 0;
+}
+
+.techniques li::marker {
+  color: var(--color-gold);
+  font-size: 0.85em;
+}
+
+@media (max-width: 760px) {
+  .mission { margin: 0; }
+  .mosaic { display: block; margin-top: 2.5rem; }
+  .mosaicTile { margin: 0 0 3.5rem; }
+}

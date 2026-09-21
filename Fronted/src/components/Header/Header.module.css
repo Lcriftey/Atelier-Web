@@ -5,28 +5,37 @@
   display: flex;
   gap: 2rem;
   justify-content: space-between;
-  min-height: 5.75rem;
-  padding: 0.65rem clamp(1.5rem, 5vw, 4.5rem);
+  min-height: 4rem;
+  padding: 0.45rem clamp(1.25rem, 5vw, 3.25rem);
   position: sticky;
   top: 0;
+  transition: transform 220ms ease;
   z-index: 10;
+}
+
+.headerVisible {
+  transform: translateY(0);
+}
+
+.headerHidden {
+  transform: translateY(-105%);
 }
 
 .brand {
   align-items: center;
   display: flex;
-  flex: 0 0 9rem;
-  height: 5.25rem;
+  flex: 0 0 6.3rem;
+  height: 3.7rem;
   justify-content: center;
   text-decoration: none;
 }
 
 .logo {
   display: block;
-  height: 5.25rem;
+  height: 3.7rem;
   max-width: 100%;
   object-fit: contain;
-  width: 9rem;
+  width: 6.3rem;
 }
 
 .brand:focus-visible {
@@ -37,16 +46,16 @@
 @media (max-width: 760px) {
   .header {
     min-height: auto;
-    padding: 0.6rem 1.25rem;
+    padding: 0.4rem 1rem;
   }
 
   .brand {
-    flex-basis: 7rem;
-    height: 3.5rem;
+    flex-basis: 5rem;
+    height: 2.5rem;
   }
 
   .logo {
-    height: 3.5rem;
-    width: 7rem;
+    height: 2.5rem;
+    width: 5rem;
   }
 }

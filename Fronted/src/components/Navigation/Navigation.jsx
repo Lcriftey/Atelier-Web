@@ -3,7 +3,8 @@ import styles from './Navigation.module.css';
 
 const links = [
   { href: '#home', label: 'Inicio' },
-  { href: '#catalog', label: 'Catálogo' },
+  { href: '#catalog', label: 'Obras' },
+  { href: '#gallery', label: 'Galería' },
   { href: '#classes', label: 'Clases' },
   { href: '#about', label: 'Sobre mí' },
   { href: '#custom-orders', label: 'Encargos' },

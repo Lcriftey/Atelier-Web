@@ -80,6 +80,10 @@
   margin-left: 0.35rem;
 }
 
+.ctaRow {
+  margin-top: 2rem;
+}
+
 .cta:focus-visible,
 .submit:focus-visible,
 input:focus-visible,
@@ -222,9 +226,61 @@ textarea:focus-visible {
   transform: translateY(-2px);
 }
 
+.faq {
+  border-top: 1px solid rgba(200, 164, 90, 0.45);
+  display: grid;
+  gap: clamp(2rem, 7vw, 7rem);
+  grid-template-columns: minmax(15rem, 0.7fr) minmax(20rem, 1.3fr);
+  margin: clamp(5rem, 10vw, 10rem) auto 0;
+  max-width: 88rem;
+  padding-top: clamp(2.5rem, 5vw, 5rem);
+}
+
+.faq h2 {
+  color: var(--color-navy);
+  font-size: clamp(2rem, 3.5vw, 3.3rem);
+  line-height: 1.05;
+  margin: 0;
+}
+
+.faqList details {
+  border-bottom: 1px solid #d9d8d1;
+  padding: 1.15rem 0;
+}
+
+.faqList summary {
+  color: var(--color-navy);
+  cursor: pointer;
+  font-size: clamp(1rem, 1.2vw, 1.15rem);
+  font-weight: 700;
+  list-style: none;
+  padding-right: 2rem;
+  position: relative;
+}
+
+.faqList summary::-webkit-details-marker { display: none; }
+.faqList summary::after {
+  color: var(--color-gold-dark);
+  content: '+';
+  font-size: 1.35rem;
+  font-weight: 400;
+  position: absolute;
+  right: 0;
+  top: -0.2rem;
+}
+.faqList details[open] summary::after { content: '-'; }
+.faqList p {
+  color: #52616a;
+  font-size: clamp(0.95rem, 1.1vw, 1.05rem);
+  line-height: 1.65;
+  margin: 0.8rem 0 0;
+  max-width: 42rem;
+}
+
 @media (max-width: 800px) {
   .introduction,
-  .formArea {
+  .formArea,
+  .faq {
     grid-template-columns: 1fr;
   }
 

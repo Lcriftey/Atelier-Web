@@ -85,7 +85,7 @@ function formatField(label, value) {
  * el backend no esté conectado, localStorage simula el registro persistente
  * con estado SOLICITADA y fecha de creación.
  */
-function ClassesSection() {
+function ClassesSection({ showForm = true }) {
   const [form, setForm] = useState(initialForm);
   const [feedback, setFeedback] = useState('');
   const availableStartTimes = useMemo(
@@ -190,9 +190,6 @@ function ClassesSection() {
             <span>02 <strong>Composición y color</strong></span>
             <span>03 <strong>Proceso creativo</strong></span>
           </div>
-          <a className={styles.cta} href="#class-request-form">
-            Agendar una clase <span aria-hidden="true">&#8594;</span>
-          </a>
         </div>
         <div className={styles.imageFrame}>
           <img
@@ -205,7 +202,38 @@ function ClassesSection() {
         </div>
       </div>
 
-      <div className={styles.formArea} id="class-request-form">
+      {showForm && <section aria-labelledby="classes-faq-title" className={styles.faq}>
+        <div>
+          <p className={styles.eyebrow}>Preguntas frecuentes</p>
+          <h2 id="classes-faq-title">Antes de comenzar</h2>
+        </div>
+        <div className={styles.faqList}>
+          <details>
+            <summary>¿Necesito experiencia previa?</summary>
+            <p>No. Las sesiones se adaptan a tu nivel y al objetivo que quieras explorar.</p>
+          </details>
+          <details>
+            <summary>¿Las clases son individuales?</summary>
+            <p>Se pueden agendar de forma individual o para grupos pequeños de acuerdo con la experiencia buscada.</p>
+          </details>
+          <details>
+            <summary>¿Qué materiales debo llevar?</summary>
+            <p>Al confirmar la clase recibirás una orientación sobre materiales. También podemos definirlos juntos.</p>
+          </details>
+          <details>
+            <summary>¿Cómo confirmo el horario?</summary>
+            <p>La solicitud se revisa por WhatsApp y allí se confirma la disponibilidad y los detalles de la sesión.</p>
+          </details>
+        </div>
+      </section>}
+
+      <div className={styles.ctaRow}>
+        <a className={styles.cta} href={showForm ? '#class-request-form' : '#classes'}>
+          Agendar una clase <span aria-hidden="true">&#8594;</span>
+        </a>
+      </div>
+
+      {showForm && <div className={styles.formArea} id="class-request-form">
         <div className={styles.formHeading}>
           <p className={styles.eyebrow}>Comienza tu proceso</p>
           <h2>Solicita una clase</h2>
@@ -286,7 +314,7 @@ function ClassesSection() {
             <button className={styles.submit} type="submit">Concretar clase</button>
           </div>
         </form>
-      </div>
+      </div>}
     </section>
   );
 }
