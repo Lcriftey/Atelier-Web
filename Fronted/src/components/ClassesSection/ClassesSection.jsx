@@ -1,13 +1,55 @@
+/*
+ * GUIA RAPIDA PARA EDITAR ESTE COMPONENTE
+ *
+ * Este archivo construye la seccion de clases y el formulario para solicitar
+ * una cita. En React, un componente es una funcion que devuelve JSX: una
+ * sintaxis parecida a HTML que permite escribir la interfaz.
+ *
+ * Zonas que puedes modificar con seguridad:
+ * - Constantes del inicio: telefono, horarios y clave de almacenamiento.
+ * - `initialForm`: campos que tiene el formulario y sus valores iniciales.
+ * - Textos dentro del `return`: titulos, etiquetas, preguntas e instrucciones.
+ * - URLs de las imagenes: cambia el valor de `src` y conserva el `alt`.
+ * - `ClassesSection.module.css`: colores, tamanos y distribucion visual.
+ *
+ * Conceptos de React usados aqui:
+ * - `useState`: guarda datos que pueden cambiar mientras la persona usa el
+ *   formulario. Se actualiza llamando a la funcion que empieza por `set`.
+ * - `useMemo`: calcula las horas disponibles solo cuando cambia la fecha o
+ *   la hora de inicio. No es necesario modificarlo para cambiar el diseno.
+ * - Props: `isHero` y `showForm` llegan desde otro archivo y deciden que
+ *   partes se muestran. Por ejemplo, `isHero` adapta esta seccion para la
+ *   portada.
+ * - `styles.nombre`: conecta JSX con una clase del archivo CSS modular.
+ *
+ * Flujo del formulario:
+ * 1. La persona escribe o selecciona datos.
+ * 2. `handleChange` actualiza `form`.
+ * 3. `handleSubmit` valida fecha y horario.
+ * 4. La solicitud se guarda localmente y se prepara un mensaje.
+ * 5. El navegador abre WhatsApp con la informacion codificada en la URL.
+ */
 import { useMemo, useState } from 'react';
 import styles from './ClassesSection.module.css';
 
+// Numero de WhatsApp en formato internacional, sin +, espacios ni guiones.
 const WHATSAPP_NUMBER = '573217257261';
+
+// Nombre con el que el navegador guarda las solicitudes en localStorage.
 const REQUESTS_STORAGE_KEY = 'academia-atelier-class-requests';
+
+// Horarios de lunes a viernes. Cada posicion de inicio corresponde a una
+// posicion de salida; la validacion tambien impide elegir una salida anterior.
 const WEEKDAY_START_TIMES = ['07:00', '08:00', '09:30', '10:30', '14:00', '15:00', '16:30', '17:30', '19:00', '20:00'];
 const WEEKDAY_END_TIMES = ['08:00', '09:00', '10:30', '11:30', '15:00', '16:00', '17:30', '18:30', '20:00', '21:00'];
+
+// Los sabados tienen un horario diferente y el domingo no ofrece horarios.
 const SATURDAY_START_TIMES = ['07:00', '08:00', '09:30', '10:30', '14:00', '15:00', '16:30', '17:30'];
 const SATURDAY_END_TIMES = ['08:00', '09:00', '10:30', '11:30', '15:00', '16:00', '17:30', '18:30'];
 
+// Este objeto representa todos los datos que controla el formulario.
+// Para agregar un nuevo campo, primero agregalo aqui y despues crea su label
+// e input en el JSX del formulario.
 const initialForm = {
   name: '',
   whatsapp: '',
@@ -21,6 +63,8 @@ const initialForm = {
   observations: '',
 };
 
+// Devuelve la fecha actual en el formato que necesita un input type="date":
+// AAAA-MM-DD. Tambien se usa para impedir reservar fechas anteriores a hoy.
 function getToday() {
   const today = new Date();
   const year = today.getFullYear();
@@ -29,11 +73,15 @@ function getToday() {
   return `${year}-${month}-${day}`;
 }
 
+// Convierte una fecha escrita como AAAA-MM-DD en un objeto Date de JavaScript.
+// Los meses de Date empiezan en cero, por eso se resta 1 al mes.
 function getDateParts(date) {
   const [year, month, day] = date.split('-').map(Number);
   return new Date(year, month - 1, day);
 }
 
+// Convierte una hora interna como "14:00" a un texto legible como "2:00 p. m.".
+// El valor interno sigue siendo de 24 horas para que las comparaciones sean fiables.
 function formatTime(time) {
   if (!time) return '';
   const [hours, minutes] = time.split(':').map(Number);
@@ -42,6 +90,8 @@ function formatTime(time) {
   return `${displayHours}:${String(minutes).padStart(2, '0')} ${suffix}`;
 }
 
+// Decide que horas de inicio aparecen segun el dia escogido.
+// En la fecha de hoy elimina las horas que ya pasaron.
 function getAvailableStartTimes(date) {
   if (!date) return [];
 
@@ -59,6 +109,7 @@ function getAvailableStartTimes(date) {
   });
 }
 
+// Devuelve las horas de salida posteriores a la hora de inicio seleccionada.
 function getAvailableEndTimes(date, startTime) {
   if (!date || !startTime) return [];
 
@@ -73,21 +124,32 @@ function getAvailableEndTimes(date, startTime) {
   });
 }
 
+// Forma una linea del mensaje de WhatsApp y evita dejar un valor vacio.
 function formatField(label, value) {
   return `${label}: ${value || 'No indicado'}`;
 }
 
 /**
- * Sección de clases y solicitud de agendamiento.
+ * Seccion de clases y solicitud de agendamiento.
  *
- * El formulario conserva la información con una estructura estable y genera
- * el mismo texto que, en la siguiente etapa, podrá enviarse a una API. Mientras
- * el backend no esté conectado, localStorage simula el registro persistente
- * con estado SOLICITADA y fecha de creación.
+ * `showForm` permite ocultar el formulario en la vista editorial.
+ * `isHero` muestra la version de portada, sin introduccion ni preguntas
+ * frecuentes. Ambos valores tienen `false` o `true` por defecto para que el
+ * componente tambien funcione si se usa sin props.
+ *
+ * Mientras el backend no esta conectado, localStorage simula el registro
+ * persistente con estado SOLICITADA y fecha de creacion.
  */
-function ClassesSection({ showForm = true }) {
+function ClassesSection({ isHero = false, showForm = true }) {
+  // `form` contiene los valores actuales de todos los campos.
+  // `setForm` provoca que React vuelva a dibujar la interfaz con esos valores.
   const [form, setForm] = useState(initialForm);
+
+  // Mensaje temporal para errores de horario o confirmacion de envio.
   const [feedback, setFeedback] = useState('');
+
+  // Estas listas alimentan los dos select de horario.
+  // Se recalculan cuando cambia la fecha o la hora de inicio.
   const availableStartTimes = useMemo(
     () => getAvailableStartTimes(form.date),
     [form.date],
@@ -97,13 +159,19 @@ function ClassesSection({ showForm = true }) {
     [form.date, form.startTime],
   );
 
+  // Se ejecuta cada vez que cambia cualquier input del formulario.
+  // `target.name` identifica el campo y `target.value` contiene su nuevo valor.
   const handleChange = ({ target }) => {
     setForm((currentForm) => {
       const nextForm = { ...currentForm, [target.name]: target.value };
+      // Al cambiar la fecha, las horas anteriores ya no son confiables.
+      // Se limpian para obligar a escogerlas de nuevo.
       if (target.name === 'date') {
         nextForm.startTime = '';
         nextForm.endTime = '';
       }
+
+      // La hora de salida depende de la hora de inicio.
       if (target.name === 'startTime') {
         nextForm.endTime = '';
       }
@@ -112,19 +180,26 @@ function ClassesSection({ showForm = true }) {
     setFeedback('');
   };
 
+  // Se ejecuta al presionar "Concretar clase".
   const handleSubmit = (event) => {
+    // Evita que el navegador recargue la pagina al enviar el formulario.
     event.preventDefault();
+
+    // La fecha debe ser hoy o posterior y no puede caer en domingo.
     const selectedDate = getDateParts(form.date);
     const today = getDateParts(getToday());
     const isValidDate = form.date && selectedDate >= today && selectedDate.getDay() !== 0;
     const isValidTime = availableStartTimes.includes(form.startTime)
       && availableEndTimes.includes(form.endTime);
 
+    // Si el horario no es valido, mostramos el mensaje y no continuamos.
     if (!isValidDate || !isValidTime) {
       setFeedback('Selecciona un día y horario disponible para agendar tu clase.');
       return;
     }
 
+    // Esta es la estructura interna de una solicitud. Si mas adelante se
+    // conecta una API, este objeto puede enviarse como JSON al backend.
     const request = {
       id: `clase-${Date.now()}`,
       client: {
@@ -144,6 +219,8 @@ function ClassesSection({ showForm = true }) {
       status: 'SOLICITADA',
     };
 
+    // localStorage pertenece al navegador. El try/catch evita que un bloqueo
+    // del almacenamiento impida abrir WhatsApp.
     try {
       const savedRequests = JSON.parse(
         localStorage.getItem(REQUESTS_STORAGE_KEY) || '[]',
@@ -156,6 +233,8 @@ function ClassesSection({ showForm = true }) {
       // El enlace a WhatsApp sigue siendo útil aunque el almacenamiento local esté bloqueado.
     }
 
+    // Este arreglo se convierte en un mensaje de varias lineas para WhatsApp.
+    // Para cambiar el texto inicial, modifica la primera cadena.
     const message = [
       'Hola, quiero solicitar una clase en Academia Atelier.',
       '',
@@ -171,13 +250,18 @@ function ClassesSection({ showForm = true }) {
       formatField('Observaciones', form.observations),
     ].join('\n');
 
+    // `encodeURIComponent` convierte espacios y saltos de linea en una URL
+    // valida. Al asignar window.location, el navegador abre WhatsApp.
     setFeedback('Solicitud preparada. Abriendo WhatsApp...');
     window.location.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
   };
 
   return (
-    <section className={styles.classes} id="classes">
-      <div className={styles.introduction}>
+    // `section` es el contenedor visual de toda la seccion.
+    // Las clases cambian automaticamente segun `isHero`.
+    <section className={`${styles.classes} ${isHero ? styles.heroClasses : ''}`} id="classes">
+      {/* En la portada se oculta esta introduccion y queda visible en #classes. */}
+      {!isHero && <div className={styles.introduction}>
         <div className={styles.introCopy}>
           <p className={styles.eyebrow}>Aprender haciendo</p>
           <h2>Una clase también puede ser una forma de mirar.</h2>
@@ -200,9 +284,10 @@ function ClassesSection({ showForm = true }) {
           />
           <span aria-hidden="true" className={styles.imageCaption}>Taller / práctica / presencia</span>
         </div>
-      </div>
+      </div>}
 
-      {showForm && <section aria-labelledby="classes-faq-title" className={styles.faq}>
+      {/* Preguntas frecuentes: solo aparecen en la pagina completa de clases. */}
+      {!isHero && showForm && <section aria-labelledby="classes-faq-title" className={styles.faq}>
         <div>
           <p className={styles.eyebrow}>Preguntas frecuentes</p>
           <h2 id="classes-faq-title">Antes de comenzar</h2>
@@ -227,21 +312,50 @@ function ClassesSection({ showForm = true }) {
         </div>
       </section>}
 
-      <div className={styles.ctaRow}>
+      {/* En la vista completa este enlace lleva hasta el formulario. */}
+      {!isHero && <div className={styles.ctaRow}>
         <a className={styles.cta} href={showForm ? '#class-request-form' : '#classes'}>
           Agendar una clase <span aria-hidden="true">&#8594;</span>
         </a>
-      </div>
+      </div>}
 
-      {showForm && <div className={styles.formArea} id="class-request-form">
+      {/*
+       * Area principal de solicitud. Si quieres cambiar su posicion o ancho,
+       * busca `.formArea` y `.heroFormArea` en ClassesSection.module.css.
+       */}
+      {showForm && <div className={`${styles.formArea} ${isHero ? styles.heroFormArea : ''}`} id="class-request-form">
+        {/* Columna izquierda: textos, imagenes y collage de la portada. */}
         <div className={styles.formHeading}>
-          <p className={styles.eyebrow}>Comienza tu proceso</p>
-          <h2>Solicita una clase</h2>
+          <p className={styles.eyebrow}>Tu próximo momento para crear</p>
+          <h2>Reserva una clase para volver a mirar con intención.</h2>
           <p>
-            Cuéntame qué te gustaría explorar. Llena el formulario y así podré orientarte de mejor manera, continuaremos la comunicacion 
-            por WhatsApp para confirmar disponibilidad y detalles.
+            Elige un horario y cuéntame qué quieres aprender. Diseñaremos una
+            sesión a tu medida y confirmaremos los detalles contigo por WhatsApp.
           </p>
+          <div className={styles.imageCollage} aria-label="Momentos de una clase de arte">
+            <img
+              alt="Pinceles y pintura sobre una mesa de trabajo"
+              className={styles.collageImageOne}
+              src="https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&w=500&q=85"
+            />
+            <img
+              alt="Manos trabajando sobre un lienzo"
+              className={styles.collageImageTwo}
+              src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&w=500&q=85"
+            />
+            <img
+              alt="Detalle de una paleta con colores de pintura"
+              className={styles.collageImageThree}
+              src="https://images.unsplash.com/photo-1549490349-8643362247b5?auto=format&fit=crop&w=500&q=85"
+            />
+          </div>
         </div>
+
+        {/*
+         * Cada label contiene el texto visible y un campo editable.
+         * Para agregar una pregunta, copia un label, cambia `name` y agrega
+         * la misma propiedad en `initialForm`.
+         */}
         <form className={styles.form} onSubmit={handleSubmit}>
           <label>
             Nombre completo
@@ -298,6 +412,8 @@ function ClassesSection({ showForm = true }) {
             Número de estudiantes
             <input min="1" name="students" onChange={handleChange} required type="number" value={form.students} />
           </label>
+
+          {/* Ayuda visible sobre los horarios atendidos. */}
           <p className={`${styles.fullField} ${styles.scheduleHelp}`} id="schedule-help">
             Atención de lunes a viernes de 7:00 a. m. a 9:00 p. m. y sábados hasta las 6:30 p. m.
           </p>
@@ -309,6 +425,8 @@ function ClassesSection({ showForm = true }) {
             ¿Alguna duda?   
             <textarea name="observations" onChange={handleChange} rows="3" value={form.observations} />
           </label>
+
+          {/* Zona final: mensaje de estado y boton que envia la solicitud. */}
           <div className={styles.submitRow}>
             <p aria-live="polite" className={styles.feedback}>{feedback}</p>
             <button className={styles.submit} type="submit">Concretar clase</button>

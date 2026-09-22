@@ -5,7 +5,6 @@ import ClassesSection from './components/ClassesSection/ClassesSection';
 import ArtworkDetail from './components/ArtworkDetail/ArtworkDetail';
 import ArtistView from './components/Artist/ArtistView';
 import GalleryView from './components/Gallery/GalleryView';
-import Hero from './components/Hero/Hero';
 import ProductCarousel from './components/ProductCarousel/ProductCarousel';
 import CustomOrdersSection from './components/CustomOrdersSection/CustomOrdersSection';
 import Footer from './components/Footer/Footer';
@@ -97,7 +96,7 @@ function App() {
     <div className="site-shell">
       <Header />
       <main>
-        <Hero />
+        <ClassesSection isHero />
         <ProductCarousel
           label="Obras destacadas"
           products={featuredProducts}

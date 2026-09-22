@@ -5,6 +5,12 @@
   padding: clamp(4rem, 8vw, 8rem) clamp(1.25rem, 7vw, 7rem);
 }
 
+.heroClasses {
+  min-height: calc(100vh - 5.75rem);
+  padding-bottom: clamp(3rem, 6vw, 6rem);
+  padding-top: 40px;
+}
+
 .introduction,
 .formArea {
   margin: 0 auto;
@@ -126,8 +132,53 @@ textarea:focus-visible {
   scroll-margin-top: 2rem;
 }
 
+.heroFormArea {
+  border-top: 0;
+  margin-top: 0;
+  padding-top: 0;
+}
+
 .formHeading h2 {
   font-size: clamp(2rem, 4vw, 3rem);
+}
+
+.imageCollage {
+  height: clamp(12rem, 22vw, 16rem);
+  margin: 2.5rem 0 1rem;
+  max-width: 28rem;
+  position: relative;
+}
+
+.imageCollage img {
+  background: var(--color-white);
+  border: 0.35rem solid var(--color-gold);
+  box-shadow: 0 0.8rem 1.5rem rgba(0, 38, 64, 0.16);
+  height: clamp(9rem, 16vw, 12rem);
+  object-fit: cover;
+  padding: 0.2rem;
+  position: absolute;
+  width: clamp(7.5rem, 13vw, 10rem);
+}
+
+.collageImageOne {
+  left: 3%;
+  top: 1rem;
+  transform: rotate(-8deg);
+  z-index: 1;
+}
+
+.collageImageTwo {
+  left: 31%;
+  top: 0;
+  transform: rotate(4deg);
+  z-index: 3;
+}
+
+.collageImageThree {
+  right: 3%;
+  top: 1.5rem;
+  transform: rotate(9deg);
+  z-index: 2;
 }
 
 .form {
@@ -306,6 +357,16 @@ textarea:focus-visible {
 
   .submit {
     width: 100%;
+  }
+
+  .imageCollage {
+    height: 13rem;
+    margin-top: 2rem;
+  }
+
+  .imageCollage img {
+    height: 10rem;
+    width: 7.75rem;
   }
 
   .imageCaption {
