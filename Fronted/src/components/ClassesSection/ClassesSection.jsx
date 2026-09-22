@@ -18,8 +18,8 @@
  * - `useMemo`: calcula las horas disponibles solo cuando cambia la fecha o
  *   la hora de inicio. No es necesario modificarlo para cambiar el diseno.
  * - Props: `isHero` y `showForm` llegan desde otro archivo y deciden que
- *   partes se muestran. Por ejemplo, `isHero` adapta esta seccion para la
- *   portada.
+ *   partes se muestran. `isHero` muestra el llamado a inscribirse y `showForm`
+ *   conserva el cuestionario para la pagina de clases.
  * - `styles.nombre`: conecta JSX con una clase del archivo CSS modular.
  *
  * Flujo del formulario:
@@ -30,10 +30,10 @@
  * 5. El navegador abre WhatsApp con la informacion codificada en la URL.
  */
 import { useMemo, useState } from 'react';
+import { WHATSAPP_NUMBER } from '../../constants/contact';
 import styles from './ClassesSection.module.css';
 
 // Numero de WhatsApp en formato internacional, sin +, espacios ni guiones.
-const WHATSAPP_NUMBER = '573217257261';
 
 // Nombre con el que el navegador guarda las solicitudes en localStorage.
 const REQUESTS_STORAGE_KEY = 'academia-atelier-class-requests';
@@ -132,15 +132,25 @@ function formatField(label, value) {
 /**
  * Seccion de clases y solicitud de agendamiento.
  *
- * `showForm` permite ocultar el formulario en la vista editorial.
- * `isHero` muestra la version de portada, sin introduccion ni preguntas
- * frecuentes. Ambos valores tienen `false` o `true` por defecto para que el
+ * `showForm` permite mostrar el cuestionario en la pagina de clases.
+ * `showFaq` permite reutilizar solo las preguntas frecuentes en otra vista.
+ * `compactFaq` elimina el espacio exterior cuando la FAQ cierra la home.
+ * `showIntroduction` y `showCta` controlan los bloques editoriales de clases.
+ * `isHero` muestra el llamado a inscribirse en la portada y oculta el
+ * cuestionario. Ambos valores tienen `false` o `true` por defecto para que el
  * componente tambien funcione si se usa sin props.
  *
  * Mientras el backend no esta conectado, localStorage simula el registro
  * persistente con estado SOLICITADA y fecha de creacion.
  */
-function ClassesSection({ isHero = false, showForm = true }) {
+function ClassesSection({
+  isHero = false,
+  compactFaq = false,
+  showCta = true,
+  showFaq = true,
+  showForm = true,
+  showIntroduction = true,
+}) {
   // `form` contiene los valores actuales de todos los campos.
   // `setForm` provoca que React vuelva a dibujar la interfaz con esos valores.
   const [form, setForm] = useState(initialForm);
@@ -260,8 +270,48 @@ function ClassesSection({ isHero = false, showForm = true }) {
     // `section` es el contenedor visual de toda la seccion.
     // Las clases cambian automaticamente segun `isHero`.
     <section className={`${styles.classes} ${isHero ? styles.heroClasses : ''}`} id="classes">
+      {isHero && <div className={styles.enrollmentHero}>
+        <div className={styles.enrollmentCopy}>
+          <p className={styles.eyebrow}>Clases particulares de arte</p>
+          <h1>¡Trabajemos juntos!</h1>
+          <p>
+            Quizás quieras aprender, explorar una nueva técnica o convertir una idea 
+            que tienes en una obra única. Cuéntame qué tienes en mente y encontremos 
+            juntos la mejor manera de hacerlo realidad..
+          </p>
+          <div className={styles.enrollmentActions}>
+            <a
+              className={styles.enrollmentButton}
+              href="#class-request-form"
+            >
+              Quiero inscribirme a una clase
+            </a>
+            <a className={styles.enrollmentButton} href="#custom-order-form">
+              Quiero cotizar un encargo personalizado
+            </a>
+          </div>
+        </div>
+        <div className={styles.imageCollage} aria-label="Momentos de una clase de arte">
+          <img
+            alt="Pinceles y pintura sobre una mesa de trabajo"
+            className={styles.collageImageOne}
+            src="https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&w=500&q=85"
+          />
+          <img
+            alt="Manos trabajando sobre un lienzo"
+            className={styles.collageImageTwo}
+            src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&w=500&q=85"
+          />
+          <img
+            alt="Detalle de una paleta con colores de pintura"
+            className={styles.collageImageThree}
+            src="https://images.unsplash.com/photo-1549490349-8643362247b5?auto=format&fit=crop&w=500&q=85"
+          />
+        </div>
+      </div>}
+
       {/* En la portada se oculta esta introduccion y queda visible en #classes. */}
-      {!isHero && <div className={styles.introduction}>
+      {!isHero && showIntroduction && <div className={styles.introduction}>
         <div className={styles.introCopy}>
           <p className={styles.eyebrow}>Aprender haciendo</p>
           <h2>Una clase también puede ser una forma de mirar.</h2>
@@ -287,7 +337,10 @@ function ClassesSection({ isHero = false, showForm = true }) {
       </div>}
 
       {/* Preguntas frecuentes: solo aparecen en la pagina completa de clases. */}
-      {!isHero && showForm && <section aria-labelledby="classes-faq-title" className={styles.faq}>
+      {!isHero && showFaq && <section
+        aria-labelledby="classes-faq-title"
+        className={`${styles.faq} ${compactFaq ? styles.compactFaq : ''}`}
+      >
         <div>
           <p className={styles.eyebrow}>Preguntas frecuentes</p>
           <h2 id="classes-faq-title">Antes de comenzar</h2>
@@ -313,7 +366,7 @@ function ClassesSection({ isHero = false, showForm = true }) {
       </section>}
 
       {/* En la vista completa este enlace lleva hasta el formulario. */}
-      {!isHero && <div className={styles.ctaRow}>
+      {!isHero && showCta && <div className={styles.ctaRow}>
         <a className={styles.cta} href={showForm ? '#class-request-form' : '#classes'}>
           Agendar una clase <span aria-hidden="true">&#8594;</span>
         </a>
@@ -321,10 +374,10 @@ function ClassesSection({ isHero = false, showForm = true }) {
 
       {/*
        * Area principal de solicitud. Si quieres cambiar su posicion o ancho,
-       * busca `.formArea` y `.heroFormArea` en ClassesSection.module.css.
+      * busca `.formArea` en ClassesSection.module.css.
        */}
-      {showForm && <div className={`${styles.formArea} ${isHero ? styles.heroFormArea : ''}`} id="class-request-form">
-        {/* Columna izquierda: textos, imagenes y collage de la portada. */}
+      {!isHero && showForm && <div className={styles.formArea} id="class-request-form">
+        {/* Columna izquierda: textos de apoyo del formulario. */}
         <div className={styles.formHeading}>
           <p className={styles.eyebrow}>Tu próximo momento para crear</p>
           <h2>Reserva una clase para volver a mirar con intención.</h2>
@@ -332,23 +385,6 @@ function ClassesSection({ isHero = false, showForm = true }) {
             Elige un horario y cuéntame qué quieres aprender. Diseñaremos una
             sesión a tu medida y confirmaremos los detalles contigo por WhatsApp.
           </p>
-          <div className={styles.imageCollage} aria-label="Momentos de una clase de arte">
-            <img
-              alt="Pinceles y pintura sobre una mesa de trabajo"
-              className={styles.collageImageOne}
-              src="https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&w=500&q=85"
-            />
-            <img
-              alt="Manos trabajando sobre un lienzo"
-              className={styles.collageImageTwo}
-              src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&w=500&q=85"
-            />
-            <img
-              alt="Detalle de una paleta con colores de pintura"
-              className={styles.collageImageThree}
-              src="https://images.unsplash.com/photo-1549490349-8643362247b5?auto=format&fit=crop&w=500&q=85"
-            />
-          </div>
         </div>
 
         {/*

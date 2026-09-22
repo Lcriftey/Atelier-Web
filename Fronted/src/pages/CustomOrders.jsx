@@ -1,4 +1,5 @@
 import styles from './CustomOrders.module.css';
+import CustomOrderForm from '../components/CustomOrderForm/CustomOrderForm';
 
 const processSteps = [
   {
@@ -120,14 +121,7 @@ function CustomOrders() {
         </p>
       </section>
 
-      <section className={styles.contact} aria-labelledby="contact-title">
-        <p className={styles.eyebrow}>Primer paso</p>
-        <h2 id="contact-title">¿Tienes una idea para una obra?</h2>
-        <p>Cuéntame qué imaginas y revisaremos juntos la mejor manera de llevarlo al lienzo.</p>
-        <a className={styles.action} href="https://wa.me/573217257261?text=Hola%2C%20quiero%20solicitar%20una%20obra%20personalizada.">
-          Solicitar una obra personalizada
-        </a>
-      </section>
+      <CustomOrderForm />
     </main>
   );
 }

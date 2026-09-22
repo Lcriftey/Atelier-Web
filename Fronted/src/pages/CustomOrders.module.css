@@ -1,7 +1,7 @@
 .page {
   margin: 0 auto;
   max-width: 94rem;
-  padding: clamp(2.5rem, 7vw, 7rem) clamp(1.25rem, 6vw, 6rem) 7rem;
+  padding: clamp(2.5rem, 7vw, 7rem) clamp(1.25rem, 6vw, 6rem) 0;
 }
 
 .hero {
@@ -220,44 +220,6 @@
   max-width: 48rem;
 }
 
-.contact {
-  background: var(--color-navy);
-  color: var(--color-white);
-  margin-top: clamp(6rem, 12vw, 12rem);
-  padding: clamp(2.5rem, 7vw, 7rem);
-  text-align: center;
-}
-
-.contact .eyebrow,
-.contact h2 {
-  color: var(--color-white);
-}
-
-.contact p:not(.eyebrow) {
-  color: rgba(251, 250, 247, 0.8);
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.action {
-  border: 1px solid var(--color-gold);
-  color: var(--color-white);
-  display: inline-block;
-  font-size: 0.9rem;
-  letter-spacing: 0.1em;
-  margin-top: 2rem;
-  padding: 0.95rem 1.3rem;
-  text-decoration: none;
-  text-transform: uppercase;
-  transition: background 160ms ease, color 160ms ease;
-}
-
-.action:hover,
-.action:focus-visible {
-  background: var(--color-gold);
-  color: var(--color-navy);
-}
-
 @media (max-width: 760px) {
   .hero,
   .details {
@@ -306,7 +268,4 @@
     grid-template-columns: 1fr;
   }
 
-  .contact {
-    padding: 2.5rem 1.25rem;
-  }
 }

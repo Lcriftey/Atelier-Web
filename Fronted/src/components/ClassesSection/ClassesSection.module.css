@@ -11,6 +11,63 @@
   padding-top: 40px;
 }
 
+.enrollmentHero {
+  align-items: center;
+  display: grid;
+  gap: clamp(3rem, 8vw, 8rem);
+  grid-template-columns: minmax(16rem, 0.9fr) minmax(22rem, 1.1fr);
+  margin: 0 auto;
+  max-width: 88rem;
+}
+
+.enrollmentCopy {
+  max-width: 34rem;
+}
+
+.enrollmentCopy h1 {
+  color: var(--color-navy);
+  font-size: clamp(2.8rem, 5vw, 5rem);
+  line-height: 0.98;
+  margin: 0;
+}
+
+.enrollmentCopy > p:not(.eyebrow) {
+  color: #52616a;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  margin: 1.5rem 0 2rem;
+  max-width: 31rem;
+}
+
+.enrollmentButton {
+  background: var(--color-navy);
+  border: 1px solid var(--color-gold);
+  color: var(--color-white);
+  display: inline-block;
+  font-family: var(--font-display);
+  font-weight: 700;
+  padding: 1rem 1.4rem;
+  text-decoration: none;
+  transition: background 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+.enrollmentActions {
+  display: grid;
+  gap: 0.75rem;
+  justify-items: start;
+}
+
+.enrollmentButton:hover {
+  background: var(--color-gold);
+  color: var(--color-white);
+  transform: translateY(-2px);
+}
+
+.enrollmentButton:focus-visible {
+  outline: 3px solid var(--color-gold);
+  outline-offset: 4px;
+}
+
 .introduction,
 .formArea {
   margin: 0 auto;
@@ -132,12 +189,6 @@ textarea:focus-visible {
   scroll-margin-top: 2rem;
 }
 
-.heroFormArea {
-  border-top: 0;
-  margin-top: 0;
-  padding-top: 0;
-}
-
 .formHeading h2 {
   font-size: clamp(2rem, 4vw, 3rem);
 }
@@ -145,8 +196,9 @@ textarea:focus-visible {
 .imageCollage {
   height: clamp(12rem, 22vw, 16rem);
   margin: 2.5rem 0 1rem;
-  max-width: 28rem;
+  max-width: 42rem;
   position: relative;
+  width: 100%;
 }
 
 .imageCollage img {
@@ -157,7 +209,7 @@ textarea:focus-visible {
   object-fit: cover;
   padding: 0.2rem;
   position: absolute;
-  width: clamp(7.5rem, 13vw, 10rem);
+  width: clamp(9rem, 15vw, 13rem);
 }
 
 .collageImageOne {
@@ -278,13 +330,16 @@ textarea:focus-visible {
 }
 
 .faq {
-  border-top: 1px solid rgba(200, 164, 90, 0.45);
   display: grid;
   gap: clamp(2rem, 7vw, 7rem);
   grid-template-columns: minmax(15rem, 0.7fr) minmax(20rem, 1.3fr);
   margin: clamp(5rem, 10vw, 10rem) auto 0;
   max-width: 88rem;
   padding-top: clamp(2.5rem, 5vw, 5rem);
+}
+
+.compactFaq {
+  margin-top: 0;
 }
 
 .faq h2 {
@@ -329,10 +384,15 @@ textarea:focus-visible {
 }
 
 @media (max-width: 800px) {
+  .enrollmentHero,
   .introduction,
   .formArea,
   .faq {
     grid-template-columns: 1fr;
+  }
+
+  .enrollmentCopy {
+    max-width: 38rem;
   }
 
   .formArea {
@@ -362,6 +422,10 @@ textarea:focus-visible {
   .imageCollage {
     height: 13rem;
     margin-top: 2rem;
+  }
+
+  .enrollmentHero {
+    gap: 1rem;
   }
 
   .imageCollage img {

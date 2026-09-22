@@ -21,6 +21,7 @@ import styles from './ProductCarousel.module.css';
  * los botones ofrecen una alternativa clara para escritorio.
  */
 function ProductCarousel({
+  compactBottom = false,
   title,
   products = [],
   label = 'Carrusel de productos',
@@ -89,7 +90,10 @@ function ProductCarousel({
   }
 
   return (
-    <section aria-label={label} className={styles.carousel}>
+    <section
+      aria-label={label}
+      className={`${styles.carousel} ${compactBottom ? styles.compactBottom : ''}`}
+    >
       <div className={styles.heading}>
         {title && <h2>{title}</h2>}
         <div className={styles.controls}>

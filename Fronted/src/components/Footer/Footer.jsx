@@ -1,5 +1,6 @@
 import logo from '../../../Assets/logo_Atelier.svg';
 import styles from './Footer.module.css';
+import { WHATSAPP_NUMBER } from '../../constants/contact';
 
 const navigation = [
   { href: '#home', label: 'Inicio' },
@@ -45,7 +46,7 @@ function Footer() {
           <h3>Contacto</h3>
           <div className={styles.contactList}>
             <a href="mailto:hola@academiaatelier.com">hola@academiaatelier.com</a>
-            <a href="https://wa.me/573217257261?text=Hola%20Academia%20Atelier%2C%20me%20gustar%C3%ADa%20consultar%20sobre%20una%20obra%20o%20una%20clase." target="_blank" rel="noreferrer">
+            <a href={`https://wa.me/${WHATSAPP_NUMBER}?text=Hola%20Academia%20Atelier%2C%20me%20gustar%C3%ADa%20consultar%20sobre%20una%20obra%20o%20una%20clase.`} target="_blank" rel="noreferrer">
               WhatsApp
             </a>
           </div>

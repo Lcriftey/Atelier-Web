@@ -16,18 +16,28 @@ function App() {
 
   useEffect(() => {
     const handleHashChange = () => {
-      setRoute(window.location.hash || '#home');
-      if (window.location.hash === '#class-request-form') {
-        window.setTimeout(() => {
-          document.getElementById('class-request-form')?.scrollIntoView({ behavior: 'smooth' });
-        }, 0);
-      } else {
+      const nextHash = window.location.hash || '#home';
+      setRoute(nextHash);
+      if (!['#class-request-form', '#custom-order-form'].includes(nextHash)) {
         window.scrollTo(0, 0);
       }
     };
     window.addEventListener('hashchange', handleHashChange);
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
+
+  useEffect(() => {
+    if (!['#class-request-form', '#custom-order-form'].includes(route)) {
+      return undefined;
+    }
+
+    const targetId = route.slice(1);
+    const scrollTimer = window.setTimeout(() => {
+      document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth' });
+    }, 0);
+
+    return () => window.clearTimeout(scrollTimer);
+  }, [route]);
 
   const detailId = route.startsWith('#obra/') ? route.replace('#obra/', '') : null;
   const detailProduct = featuredProducts.find((product) => product.id === detailId);
@@ -62,7 +72,7 @@ function App() {
     );
   }
 
-  if (route === '#custom-orders') {
+  if (route === '#custom-orders' || route === '#custom-order-form') {
     return (
       <div className="site-shell">
         <Header />
@@ -97,13 +107,20 @@ function App() {
       <Header />
       <main>
         <ClassesSection isHero />
+        <CustomOrdersSection />
         <ProductCarousel
+          compactBottom
           label="Obras destacadas"
           products={featuredProducts}
           title="Obras destacadas"
         />
-        <CustomOrdersSection />
-        <ClassesSection showForm={false} />
+        <ClassesSection
+          compactFaq
+          showCta={false}
+          showFaq
+          showForm={false}
+          showIntroduction={false}
+        />
       </main>
       <Footer />
     </div>

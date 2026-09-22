@@ -4,6 +4,10 @@
   padding: 5rem clamp(1.25rem, 6vw, 6rem) 6rem;
 }
 
+.compactBottom {
+  padding-bottom: 0;
+}
+
 .heading {
   align-items: center;
   display: flex;
