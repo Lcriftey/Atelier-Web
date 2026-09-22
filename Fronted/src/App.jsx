@@ -4,7 +4,6 @@ import CatalogView from './components/Catalog/CatalogView';
 import ClassesSection from './components/ClassesSection/ClassesSection';
 import ArtworkDetail from './components/ArtworkDetail/ArtworkDetail';
 import ArtistView from './components/Artist/ArtistView';
-import GalleryView from './components/Gallery/GalleryView';
 import ProductCarousel from './components/ProductCarousel/ProductCarousel';
 import CustomOrdersSection from './components/CustomOrdersSection/CustomOrdersSection';
 import Footer from './components/Footer/Footer';
@@ -47,16 +46,6 @@ function App() {
       <div className="site-shell">
         <Header />
         <CatalogView products={featuredProducts} />
-        <Footer />
-      </div>
-    );
-  }
-
-  if (route === '#gallery') {
-    return (
-      <div className="site-shell">
-        <Header />
-        <GalleryView products={featuredProducts} />
         <Footer />
       </div>
     );

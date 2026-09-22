@@ -5,7 +5,6 @@ import { WHATSAPP_NUMBER } from '../../constants/contact';
 const navigation = [
   { href: '#home', label: 'Inicio' },
   { href: '#catalog', label: 'Obras' },
-  { href: '#gallery', label: 'Galería' },
   { href: '#classes', label: 'Clases' },
   { href: '#about', label: 'El artista' },
   { href: '#custom-orders', label: 'Encargos' },
