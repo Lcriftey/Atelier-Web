@@ -16,6 +16,7 @@ public record Obra(
         @NotBlank @Size(max = 200) String nombre,
         @NotBlank String descripcionArtistica,
         @NotBlank String descripcionTecnica,
+        @NotBlank String dimensiones,
         @NotNull @DecimalMin("0.00") BigDecimal precio,
         @NotBlank @Size(min = 3, max = 3) String moneda,
         @NotNull EstadoObra estado,
@@ -24,4 +25,10 @@ public record Obra(
         OffsetDateTime actualizadoEn,
         OffsetDateTime eliminadoEn
 ) {
+    public Obra(UUID id, String nombre, String descripcionArtistica, String descripcionTecnica,
+                BigDecimal precio, String moneda, EstadoObra estado, LocalDate fechaPublicacion,
+                OffsetDateTime creadoEn, OffsetDateTime actualizadoEn, OffsetDateTime eliminadoEn) {
+        this(id, nombre, descripcionArtistica, descripcionTecnica, "No especificadas", precio,
+                moneda, estado, fechaPublicacion, creadoEn, actualizadoEn, eliminadoEn);
+    }
 }

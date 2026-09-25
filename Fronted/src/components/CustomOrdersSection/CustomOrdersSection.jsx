@@ -1,12 +1,15 @@
+import { getRandomPoster } from '../../data/posterAssets';
 import styles from './CustomOrdersSection.module.css';
 
 function CustomOrdersSection() {
+  const poster = getRandomPoster();
+
   return (
     <section className={styles.section} aria-labelledby="custom-orders-heading">
       <div className={styles.imageWrap}>
         <img
           alt="Obra personalizada en proceso dentro del taller"
-          src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&w=1200&q=88"
+          src={poster}
         />
         <span className={styles.imageLabel}>Una obra hecha para ti</span>
       </div>

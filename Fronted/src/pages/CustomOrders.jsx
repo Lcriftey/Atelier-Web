@@ -1,3 +1,4 @@
+import { getRandomPosterSet } from '../data/posterAssets';
 import styles from './CustomOrders.module.css';
 import CustomOrderForm from '../components/CustomOrderForm/CustomOrderForm';
 
@@ -34,6 +35,8 @@ const details = [
 ];
 
 function CustomOrders() {
+  const [heroPoster, examplePosterOne, examplePosterTwo, examplePosterThree] = getRandomPosterSet(4);
+
   return (
     <main className={styles.page} id="custom-orders">
       <section className={styles.hero} aria-labelledby="custom-orders-title">
@@ -48,7 +51,7 @@ function CustomOrders() {
         <figure className={styles.heroFigure}>
           <img
             alt="Detalle de una pintura abstracta creada en el taller"
-            src="https://images.unsplash.com/photo-1549490349-8643362247b5?auto=format&fit=crop&w=1200&q=88"
+            src={heroPoster}
           />
           <figcaption>Del primer intercambio a la pieza final</figcaption>
         </figure>
@@ -97,15 +100,15 @@ function CustomOrders() {
         </div>
         <div className={styles.exampleGrid}>
           <figure className={styles.example}>
-            <img alt="Composición artística de gran formato en tonos cálidos" src="https://images.unsplash.com/photo-1577083552431-6e5fd01aa342?auto=format&fit=crop&w=1000&q=88" />
+            <img alt="Composición artística de gran formato en tonos cálidos" src={examplePosterOne} />
             <figcaption>Composición de gran formato</figcaption>
           </figure>
           <figure className={styles.example}>
-            <img alt="Pintura contemporánea con formas geométricas" src="https://images.unsplash.com/photo-1541961017774-22349e4a1262?auto=format&fit=crop&w=800&q=88" />
+            <img alt="Pintura contemporánea con formas geométricas" src={examplePosterTwo} />
             <figcaption>Abstracción y color</figcaption>
           </figure>
           <figure className={styles.example}>
-            <img alt="Detalle de una obra pictórica con textura" src="https://images.unsplash.com/photo-1549490349-8643362247b5?auto=format&fit=crop&w=800&q=88" />
+            <img alt="Detalle de una obra pictórica con textura" src={examplePosterThree} />
             <figcaption>Materia y textura</figcaption>
           </figure>
         </div>

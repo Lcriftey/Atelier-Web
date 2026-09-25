@@ -1,0 +1,49 @@
+.page { min-height: 100vh; padding: 3rem clamp(1rem, 4vw, 4rem); background: var(--color-paper); color: var(--color-ink); }
+.header { max-width: 72rem; margin: 0 auto 2.5rem; border-bottom: 1px solid var(--color-gold); padding-bottom: 1.5rem; }
+.header h1, h2, h3, p { margin-top: 0; }
+.header h1 { color: var(--color-navy); font-size: clamp(2rem, 4vw, 3.25rem); margin-bottom: .5rem; }
+.header p:last-child, .muted { color: #5f6c73; }
+.eyebrow { color: var(--color-gold-dark); font-size: .75rem; letter-spacing: .08em; margin-bottom: .5rem; text-transform: uppercase; }
+.layout, .imagesSection { max-width: 72rem; margin: 0 auto 2rem; }
+.layout { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(20rem, 1fr); gap: 1.5rem; align-items: start; }
+.listPanel, .formPanel, .imagesSection { background: var(--color-white); border: 1px solid #ded8cc; padding: 1.25rem; }
+.sectionHeading { display: flex; align-items: start; justify-content: space-between; gap: 1rem; margin-bottom: 1.25rem; }
+.sectionHeading h2 { color: var(--color-navy); font-size: 1.35rem; margin-bottom: 0; }
+.primaryButton, .actions button, .dangerText { border: 0; cursor: pointer; font: inherit; }
+.primaryButton { background: var(--color-navy); color: var(--color-white); padding: .7rem 1rem; }
+.primaryButton:hover, .primaryButton:focus-visible { background: var(--color-gold-dark); }
+.primaryButton:disabled { cursor: wait; opacity: .6; }
+.tableWrap { overflow-x: auto; }
+table { border-collapse: collapse; min-width: 55rem; width: 100%; }
+th, td { border-bottom: 1px solid #e5e0d8; padding: .8rem .6rem; text-align: left; vertical-align: middle; }
+th { color: #5f6c73; font-size: .72rem; letter-spacing: .06em; text-transform: uppercase; }
+td small, .imageItem small { color: #68757b; display: block; font-size: .8rem; margin-top: .2rem; }
+.selectedRow { background: #f3eee4; }
+.status { background: #e9f0eb; color: #2c694b; display: inline-block; font-size: .72rem; padding: .3rem .45rem; }
+.actions { white-space: nowrap; }
+.actions button, .dangerText { background: none; color: var(--color-navy); font-size: .8rem; margin-right: .65rem; padding: .2rem 0; text-decoration: underline; }
+.dangerText { color: #9a3f35; }
+.formGrid { display: grid; grid-template-columns: 1fr 1fr; gap: .9rem; }
+label { color: var(--color-navy); display: flex; flex-direction: column; font-size: .85rem; gap: .35rem; }
+input, textarea, select { background: var(--color-paper); border: 1px solid #cfc7b8; color: var(--color-ink); font: inherit; padding: .65rem; width: 100%; }
+textarea { min-height: 6rem; resize: vertical; }
+input:focus, textarea:focus, select:focus { border-color: var(--color-gold-dark); outline: 2px solid #e6d5ae; }
+.wide { grid-column: 1 / -1; }
+.formFooter { align-items: center; display: flex; flex-wrap: wrap; gap: .8rem; margin-top: 1.25rem; }
+.formFooter p, .imageForm p { margin: 0; }
+.success { color: #2c694b; font-size: .85rem; }
+.error { color: #9a3f35; font-size: .85rem; }
+.notice { max-width: 72rem; margin: 0 auto 1rem; padding: .75rem 1rem; background: #eee9dd; }
+.imageLayout { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(18rem, 1fr); gap: 1.5rem; }
+.imageList { display: grid; gap: .75rem; align-content: start; }
+.imageItem { align-items: center; border-bottom: 1px solid #e5e0d8; display: grid; gap: .8rem; grid-template-columns: 5rem 1fr auto; padding-bottom: .75rem; }
+.imageItem img { aspect-ratio: 1; background: #e9e4da; object-fit: cover; width: 5rem; }
+.imageForm { border-left: 1px solid #e5e0d8; display: grid; gap: .8rem; padding-left: 1.5rem; }
+.imageForm h3 { color: var(--color-navy); margin-bottom: 0; }
+.imagePreview { aspect-ratio: 16 / 9; background: #e9e4da; max-height: 10rem; object-fit: cover; width: 100%; }
+.checkbox { align-items: center; flex-direction: row; }
+.checkbox input { width: auto; }
+.empty { color: #68757b; padding: 2rem; text-align: center; }
+.visuallyHidden { height: 1px; overflow: hidden; position: absolute; width: 1px; }
+@media (max-width: 900px) { .layout, .imageLayout { grid-template-columns: 1fr; } .imageForm { border-left: 0; border-top: 1px solid #e5e0d8; padding-left: 0; padding-top: 1.5rem; } }
+@media (max-width: 560px) { .page { padding: 2rem 1rem; } .formGrid { grid-template-columns: 1fr; } .wide { grid-column: auto; } .sectionHeading { align-items: stretch; flex-direction: column; } .primaryButton { width: 100%; } .imageItem { grid-template-columns: 4rem 1fr; } .imageItem img { width: 4rem; } .imageItem .dangerText { grid-column: 2; text-align: left; } }

@@ -30,6 +30,7 @@
  * 5. El navegador abre WhatsApp con la informacion codificada en la URL.
  */
 import { useMemo, useState } from 'react';
+import { getRandomPoster, getRandomPosterSet } from '../../data/posterAssets';
 import { WHATSAPP_NUMBER } from '../../constants/contact';
 import styles from './ClassesSection.module.css';
 
@@ -292,21 +293,14 @@ function ClassesSection({
           </div>
         </div>
         <div className={styles.imageCollage} aria-label="Momentos de una clase de arte">
-          <img
-            alt="Pinceles y pintura sobre una mesa de trabajo"
-            className={styles.collageImageOne}
-            src="https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&w=500&q=85"
-          />
-          <img
-            alt="Manos trabajando sobre un lienzo"
-            className={styles.collageImageTwo}
-            src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&w=500&q=85"
-          />
-          <img
-            alt="Detalle de una paleta con colores de pintura"
-            className={styles.collageImageThree}
-            src="https://images.unsplash.com/photo-1549490349-8643362247b5?auto=format&fit=crop&w=500&q=85"
-          />
+          {getRandomPosterSet(3).map((poster, index) => (
+            <img
+              key={`${poster}-${index}`}
+              alt={index === 0 ? 'Pinceles y pintura sobre una mesa de trabajo' : index === 1 ? 'Manos trabajando sobre un lienzo' : 'Detalle de una paleta con colores de pintura'}
+              className={index === 0 ? styles.collageImageOne : index === 1 ? styles.collageImageTwo : styles.collageImageThree}
+              src={poster}
+            />
+          ))}
         </div>
       </div>}
 
@@ -330,7 +324,7 @@ function ClassesSection({
             alt="Persona aprendiendo técnicas de pintura en un taller artístico"
             className={styles.classImage}
             loading="lazy"
-            src="https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&w=1100&q=85"
+            src={getRandomPoster()}
           />
           <span aria-hidden="true" className={styles.imageCaption}>Taller / práctica / presencia</span>
         </div>

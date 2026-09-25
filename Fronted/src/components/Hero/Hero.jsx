@@ -1,7 +1,10 @@
 import Button from '../Button/Button';
+import { getRandomPosterSet } from '../../data/posterAssets';
 import styles from './Hero.module.css';
 
 function Hero() {
+  const [mainPoster, secondaryPoster] = getRandomPosterSet(2);
+
   return (
     <section className={styles.hero} id="home">
       <div className={styles.copy}>
@@ -22,12 +25,12 @@ function Hero() {
         <img
           alt="Pintura abstracta en proceso"
           className={styles.painting}
-          src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&w=900&q=85"
+          src={mainPoster}
         />
         <img
           alt="Artista pintando frente a un lienzo"
           className={styles.artistPhoto}
-          src="https://images.unsplash.com/photo-1549490349-8643362247b5?auto=format&fit=crop&w=700&q=85"
+          src={secondaryPoster}
         />
         <span className={styles.palette} aria-hidden="true" />
       </div>
