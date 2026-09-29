@@ -2,6 +2,7 @@ import { getRandomPosterSet } from '../data/posterAssets';
 import styles from './CustomOrders.module.css';
 import CustomOrderForm from '../components/CustomOrderForm/CustomOrderForm';
 
+
 const processSteps = [
   {
     number: '01',
@@ -10,38 +11,42 @@ const processSteps = [
   },
   {
     number: '02',
-    title: 'Definimos la propuesta',
-    text: 'Acordamos concepto, formato, materiales, tiempos y una estimación clara.',
+    title: 'Definamos la propuesta',
+    text: 'Acordamos concepto, formato, tecnica, materiales, tiempos y una estimación clara.',
   },
   {
     number: '03',
-    title: 'Se desarrolla la obra',
-    text: 'La pieza toma forma en el taller con avances y conversaciones durante el proceso.',
+    title: 'Empezamos a trabajar',
+    text: 'La pieza toma forma en el taller con avances demostrablesy conversaciones durante el proceso para garantizar tu satisfaccion.',
   },
   {
     number: '04',
-    title: 'Entrega de la obra',
-    text: 'Coordinamos la entrega de una obra preparada para acompañar tu espacio.',
+    title: 'Entregamos la obra',
+    text: 'Coordinamos la entrega de tu obra finalizada, lista para acompañarte por el resto de tu vida.',
   },
 ];
 
 const details = [
   ['Tipo de obras', 'Piezas abstractas, retratos, paisajes y composiciones creadas a partir de una historia personal.'],
-  ['Técnicas', 'Óleo, acrílico, pigmento y técnica mixta, según el lenguaje que mejor sirva a la propuesta.'],
+  ['Técnicas', 'Óleo, acrílico, pigmento y técnica mixta, según el lenguaje que mejor sirva a tu visión.'],
   ['Materiales', 'Lienzo y soportes preparados con materiales seleccionados para conservar la textura y el color.'],
-  ['Tamaños', 'Formatos pequeños, medianos y de gran escala. El tamaño se define según la obra y el espacio.'],
-  ['Tiempos', 'El desarrollo suele tomar entre cuatro y ocho semanas, dependiendo de la complejidad y el formato.'],
+  ['Tamaños', 'Formatos pequeños, medianos y de gran escala. El tamaño se define según tu deseo.'],
+  ['Tiempos', 'El desarrollo es independiente de cada trabajo, esta sujeto a la complejidad de la obra, disponibilidad de materiales y nuestra agenda.'],
   ['Precio', 'Se calcula según tamaño, técnica, materiales, nivel de detalle, urgencia y condiciones de entrega.'],
 ];
 
-function CustomOrders() {
-  const [heroPoster, examplePosterOne, examplePosterTwo, examplePosterThree] = getRandomPosterSet(4);
+function CustomOrders({ works = [] }) {
+  const [heroPoster] = getRandomPosterSet(1);
+  const featuredWork = works[0];
+  const featuredImage = featuredWork?.image || featuredWork?.images?.[0] || heroPoster;
+  const featuredYear = featuredWork?.published ? String(featuredWork.published).slice(0, 4) : '';
+  const worksCount = String(works.length).padStart(2, '0');
 
   return (
     <main className={styles.page} id="custom-orders">
       <section className={styles.hero} aria-labelledby="custom-orders-title">
         <div>
-          <p className={styles.eyebrow}>Obras personalizadas</p>
+          <p className={styles.eyebrow}>Encargos personalizados</p>
           <h1 id="custom-orders-title">Una obra que comienza con tu idea.</h1>
           <p className={styles.lead}>
             Cada encargo es una conversación. Conozcamos lo que quieres expresar,
@@ -91,37 +96,37 @@ function CustomOrders() {
       </section>
 
       <section className={styles.examples} aria-labelledby="examples-title">
-        <div className={styles.examplesHeader}>
-          <div>
-            <p className={styles.eyebrow}>Trabajos anteriores</p>
-            <h2 id="examples-title">Piezas con una historia propia.</h2>
-          </div>
-          <p>Una selección de lenguajes, escalas y atmósferas posibles.</p>
+        <div className={styles.examplesMeta}>
+          <p className={styles.eyebrow}>Trabajos anteriores</p>
+          <span aria-label={`Obra 1 de ${works.length}`} className={styles.examplesCount}>
+            01 / {worksCount}
+          </span>
         </div>
-        <div className={styles.exampleGrid}>
-          <figure className={styles.example}>
-            <img alt="Composición artística de gran formato en tonos cálidos" src={examplePosterOne} />
-            <figcaption>Composición de gran formato</figcaption>
-          </figure>
-          <figure className={styles.example}>
-            <img alt="Pintura contemporánea con formas geométricas" src={examplePosterTwo} />
-            <figcaption>Abstracción y color</figcaption>
-          </figure>
-          <figure className={styles.example}>
-            <img alt="Detalle de una obra pictórica con textura" src={examplePosterThree} />
-            <figcaption>Materia y textura</figcaption>
-          </figure>
+        <div className={styles.examplesCopy}>
+          <h2 id="examples-title">
+            <span>Piezas con una</span>
+            <span>historia propia.</span>
+          </h2>
+          <p>Una selección de lenguajes, escalas y atmósferas.</p>
+          <span aria-hidden="true" className={styles.examplesRule} />
+          <a className={styles.examplesCta} href="#catalog">
+            Descubrir las obras <span aria-hidden="true">→</span>
+          </a>
         </div>
-      </section>
-
-      <section className={styles.conditions} aria-labelledby="conditions-title">
-        <h2 id="conditions-title">Una colaboración clara desde el principio.</h2>
-        <p>
-          La propuesta se confirma antes de iniciar la obra. Los cambios posteriores,
-          materiales especiales, entregas fuera de la ciudad o solicitudes urgentes
-          pueden modificar el presupuesto y el tiempo acordado. Cada detalle se conversa
-          contigo antes de avanzar.
-        </p>
+        <a
+          aria-label={`Descubrir la galería. Obra destacada: ${featuredWork?.name || 'obra de arte de Academia Atelier'}`}
+          className={styles.examplesArtwork}
+          href="#catalog"
+        >
+          <img
+            alt={featuredWork?.name || featuredWork?.alt || 'Obra de arte de Academia Atelier'}
+            src={featuredImage}
+          />
+          <span className={styles.examplesArtworkMeta}>
+            <span>{featuredWork?.technique || 'Obra de la colección'}</span>
+            {featuredYear && <span>{featuredYear}</span>}
+          </span>
+        </a>
       </section>
 
       <CustomOrderForm />

@@ -4,9 +4,9 @@
   display: grid;
   gap: clamp(2rem, 7vw, 7rem);
   grid-template-columns: minmax(15rem, 0.7fr) minmax(20rem, 1.3fr);
-  margin-left: calc(50% - 50vw);
   margin-top: clamp(6rem, 12vw, 12rem);
-  margin-right: calc(50% - 50vw);
+  margin-left: calc(0px - clamp(1.25rem, 6vw, 6rem));
+  margin-right: calc(0px - clamp(1.25rem, 6vw, 6rem));
   padding: clamp(3rem, 6vw, 5rem) clamp(1.25rem, 6vw, 6rem);
 }
 

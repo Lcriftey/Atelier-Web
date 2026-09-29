@@ -1,11 +1,15 @@
 import { useEffect, useState } from 'react';
+import ProductCarousel from '../ProductCarousel/ProductCarousel';
+import { WHATSAPP_NUMBER } from '../../constants/contact';
 import styles from './ArtworkDetail.module.css';
 
-function ArtworkDetail({ product }) {
+function ArtworkDetail({ product, otherProducts = [] }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isAdded, setIsAdded] = useState(false);
   const images = product.images || [product.image];
   const activeImage = images[activeIndex];
+  const contactMessage = `Hola, estoy interesado en comprar la obra ${product.name}`;
+  const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(contactMessage)}`;
 
   useEffect(() => {
     setActiveIndex(0);
@@ -17,7 +21,8 @@ function ArtworkDetail({ product }) {
   };
 
   return (
-    <main className={styles.page}>
+    <>
+      <main className={styles.page}>
       <div className={styles.backRow}>
         <a href="#catalog">← Volver a obras</a>
         <span>Obra original / {product.technique}</span>
@@ -68,7 +73,9 @@ function ArtworkDetail({ product }) {
           </dl>
           <p className={styles.technicalDescription}>{product.technicalDescription}</p>
           <div className={styles.actions}>
-            <a className={styles.primaryAction} href="#contact">Contactar al artista <span>→</span></a>
+            <a className={styles.primaryAction} href={whatsappUrl} rel="noreferrer" target="_blank">
+              Contactar al artista <span>→</span>
+            </a>
             <button className={styles.secondaryAction} onClick={() => setIsAdded(true)} type="button">
               {isAdded ? 'Obra añadida' : 'Añadir al carrito'} <span>{isAdded ? '✓' : '+'}</span>
             </button>
@@ -76,7 +83,14 @@ function ArtworkDetail({ product }) {
           <p className={styles.note}>La compra se coordina directamente con el artista.</p>
         </section>
       </div>
-    </main>
+      </main>
+      <ProductCarousel
+        compactBottom
+        label="Otras obras destacadas"
+        products={otherProducts}
+        title="Obras destacadas"
+      />
+    </>
   );
 }
 

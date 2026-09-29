@@ -1,5 +1,7 @@
 # Default ignored files
 /shelf/
+/Reglas/
+BD-Supabase-Info./
 /workspace.xml
 # Editor-based HTTP Client requests
 /httpRequests/

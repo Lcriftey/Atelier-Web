@@ -49,8 +49,7 @@
   width: 100%;
 }
 
-.heroFigure figcaption,
-.example figcaption {
+.heroFigure figcaption {
   color: #687177;
   font-size: 0.85rem;
   letter-spacing: 0.06em;
@@ -107,10 +106,13 @@
 }
 
 .details {
+  background: var(--color-navy);
+  color: var(--color-white);
   display: grid;
   gap: clamp(2rem, 6vw, 6rem);
   grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
-  margin-top: clamp(6rem, 12vw, 12rem);
+  margin: clamp(6rem, 12vw, 12rem) calc(0px - clamp(1.25rem, 6vw, 6rem)) 0;
+  padding: clamp(3rem, 6vw, 5rem) clamp(1.25rem, 6vw, 6rem);
 }
 
 .detailsIntro h2,
@@ -123,6 +125,10 @@
   margin: 0;
 }
 
+.detailsIntro h2 {
+  color: var(--color-white);
+}
+
 .detailsIntro p:not(.eyebrow),
 .contact p:not(.eyebrow) {
   color: #52616a;
@@ -130,6 +136,10 @@
   line-height: 1.7;
   margin: 1.5rem 0 0;
   max-width: 30rem;
+}
+
+.detailsIntro > p:not(.eyebrow) {
+  color: rgba(251, 250, 247, 0.8);
 }
 
 .detailList {
@@ -149,75 +159,121 @@
 }
 
 .detailList strong {
-  color: var(--color-navy);
+  color: var(--color-gold);
   font-size: 0.9rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .detailList span {
-  color: #52616a;
+  color: rgba(251, 250, 247, 0.85);
   line-height: 1.55;
 }
 
 .examples {
-  margin-top: clamp(6rem, 12vw, 12rem);
+  align-items: center;
+  display: grid;
+  gap: clamp(1.5rem, 4vw, 4rem) clamp(2rem, 6vw, 6rem);
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  margin-top: clamp(3rem, 6vw, 6rem);
 }
 
-.examplesHeader {
-  align-items: end;
+.examplesMeta {
+  align-items: center;
+  border-bottom: 1px solid rgba(200, 164, 90, 0.5);
   display: flex;
+  grid-column: 1 / -1;
   justify-content: space-between;
-  margin-bottom: 2rem;
+  padding-bottom: 0.8rem;
 }
 
-.examplesHeader p {
+.examplesMeta .eyebrow {
+  margin: 0;
+}
+
+.examplesCount {
+  color: var(--color-gold-dark);
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.16em;
+}
+
+.examplesCopy {
+  max-width: 34rem;
+}
+
+.examplesCopy h2 span {
+  display: block;
+}
+
+.examplesCopy > p:not(.eyebrow) {
   color: #687177;
   line-height: 1.5;
-  margin: 0;
-  max-width: 22rem;
+  margin: 1.25rem 0 0;
+  max-width: 30rem;
 }
 
-.exampleGrid {
-  display: grid;
-  gap: 1.25rem;
-  grid-template-columns: 1.2fr 0.8fr 0.8fr;
+.examplesRule {
+  background: var(--color-gold);
+  display: block;
+  height: 1px;
+  margin-top: 1.75rem;
+  width: 3.25rem;
 }
 
-.example:first-child {
-  grid-row: span 2;
+.examplesCta {
+  align-items: center;
+  border-bottom: 1px solid rgba(200, 164, 90, 0.7);
+  color: var(--color-navy);
+  display: inline-flex;
+  font-weight: 700;
+  gap: 0.6rem;
+  margin-top: 1.25rem;
+  padding-bottom: 0.45rem;
+  text-decoration: none;
 }
 
-.example img {
-  aspect-ratio: 4 / 3;
+.examplesCta span {
+  color: var(--color-gold-dark);
+}
+
+.examplesCta:focus-visible,
+.examplesArtwork:focus-visible {
+  outline: 3px solid var(--color-gold);
+  outline-offset: 4px;
+}
+
+.examplesArtwork {
+  display: block;
+  min-width: 0;
+  text-decoration: none;
+}
+
+.examplesArtwork img {
+  aspect-ratio: 5 / 4;
   display: block;
   object-fit: cover;
+  transition: transform 220ms ease;
   width: 100%;
 }
 
-.example:first-child img {
-  aspect-ratio: 3 / 4;
-  height: 100%;
+.examplesArtwork:hover img,
+.examplesArtwork:focus-visible img {
+  transform: scale(1.035);
 }
 
-.conditions {
-  border-left: 3px solid var(--color-gold);
-  margin-top: clamp(6rem, 12vw, 12rem);
-  padding-left: clamp(1.25rem, 4vw, 4rem);
+.examplesArtworkMeta {
+  align-items: center;
+  color: #687177;
+  display: flex;
+  justify-content: space-between;
+  padding-top: 0.7rem;
 }
 
-.conditions h2 {
-  color: var(--color-navy);
-  font-size: clamp(1.7rem, 3vw, 3rem);
-  font-weight: 500;
-  margin: 0;
-}
-
-.conditions p {
-  color: #52616a;
-  line-height: 1.7;
-  margin: 1rem 0 0;
-  max-width: 48rem;
+.examplesArtworkMeta span {
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 @media (max-width: 760px) {
@@ -230,8 +286,11 @@
     font-size: clamp(3rem, 15vw, 5rem);
   }
 
-  .processGrid,
-  .exampleGrid {
+  .processGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .examples {
     grid-template-columns: 1fr;
   }
 
@@ -246,21 +305,6 @@
 
   .number {
     margin-bottom: 1.5rem;
-  }
-
-  .examplesHeader {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .example:first-child {
-    grid-row: auto;
-  }
-
-  .example:first-child img {
-    aspect-ratio: 4 / 3;
-    height: auto;
   }
 
   .detailList li {

@@ -3,7 +3,7 @@ import styles from './Navigation.module.css';
 
 const links = [
   { href: '#home', label: 'Inicio' },
-  { href: '#catalog', label: 'Obras' },
+  { href: '#catalog', label: 'Galería' },
   { href: '#classes', label: 'Clases' },
   { href: '#about', label: 'Sobre mí' },
   { href: '#custom-orders', label: 'Encargos' },
@@ -12,6 +12,12 @@ const links = [
 
 function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
+
+  const handleContactClick = (event) => {
+    event.preventDefault();
+    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+    setIsOpen(false);
+  };
 
   return (
     <nav aria-label="Navegación principal" className={styles.navigation}>
@@ -28,7 +34,11 @@ function Navigation() {
       </button>
       <div className={`${styles.links} ${isOpen ? styles.linksOpen : ''}`}>
         {links.map((link) => (
-          <a href={link.href} key={link.href} onClick={() => setIsOpen(false)}>
+          <a
+            href={link.href}
+            key={link.href}
+            onClick={link.href === '#contact' ? handleContactClick : () => setIsOpen(false)}
+          >
             {link.label}
           </a>
         ))}

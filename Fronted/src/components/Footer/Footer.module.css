@@ -64,16 +64,20 @@
 }
 
 .navList,
-.contactList,
-.socialList {
+.contactList {
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
 }
 
+.socialList {
+  align-items: center;
+  display: flex;
+  gap: 0.75rem;
+}
+
 .navList a,
-.contactList a,
-.socialList a {
+.contactList a {
   color: rgba(251, 250, 247, 0.82);
   font-size: 0.95rem;
   text-decoration: none;
@@ -82,11 +86,36 @@
 
 .navList a:hover,
 .contactList a:hover,
-.socialList a:hover,
 .navList a:focus-visible,
-.contactList a:focus-visible,
-.socialList a:focus-visible {
+.contactList a:focus-visible {
   color: var(--color-gold);
+}
+
+.socialList a {
+  align-items: center;
+  color: var(--color-white);
+  display: inline-flex;
+  height: 2.75rem;
+  justify-content: center;
+  opacity: 0.9;
+  text-decoration: none;
+  transition: opacity 180ms ease;
+  width: 2.75rem;
+}
+
+.socialList a:hover {
+  opacity: 0.65;
+}
+
+.socialList a:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 3px;
+}
+
+.socialList svg {
+  display: block;
+  height: 1.4rem;
+  width: 1.4rem;
 }
 
 .meta {

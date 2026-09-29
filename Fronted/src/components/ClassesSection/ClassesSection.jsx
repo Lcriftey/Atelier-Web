@@ -341,16 +341,16 @@ function ClassesSection({
         </div>
         <div className={styles.faqList}>
           <details>
-            <summary>¿Necesito experiencia previa?</summary>
+            <summary>¿Necesito experiencia previa para las clases?</summary>
             <p>No. Las sesiones se adaptan a tu nivel y al objetivo que quieras explorar.</p>
           </details>
           <details>
             <summary>¿Las clases son individuales?</summary>
-            <p>Se pueden agendar de forma individual o para grupos pequeños de acuerdo con la experiencia buscada.</p>
+            <p>Se pueden agendar de forma individual o para grupos pequeños. En Atelier priorizamos un enfoque personalizado para garantizar la calidad de cada clase.</p>
           </details>
           <details>
             <summary>¿Qué materiales debo llevar?</summary>
-            <p>Al confirmar la clase recibirás una orientación sobre materiales. También podemos definirlos juntos.</p>
+            <p>Al confirmar la clase recibirás una orientación sobre materiales. Puedes traer los tuyos y complementarlos con los que te proporcionaremos en cada clase.</p>
           </details>
           <details>
             <summary>¿Cómo confirmo el horario?</summary>

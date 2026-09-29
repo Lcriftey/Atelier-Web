@@ -118,7 +118,7 @@ function App() {
     return (
       <div className="site-shell">
         <Header />
-        <CustomOrders />
+        <CustomOrders works={catalogProducts} />
         <Footer />
       </div>
     );
@@ -138,7 +138,10 @@ function App() {
     return (
       <div className="site-shell">
         <Header />
-        <ArtworkDetail product={detailProduct} />
+        <ArtworkDetail
+          otherProducts={catalogProducts.filter((product) => product.id !== detailProduct.id)}
+          product={detailProduct}
+        />
         <Footer />
       </div>
     );
