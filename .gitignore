@@ -1,0 +1,15 @@
+### Frontend ###
+Fronted/node_modules/
+Fronted/dist/
+
+### Environment variables ###
+.env
+.env.local
+.env.*.local
+
+### Backend ###
+Backend/backend/target/
+
+### IntelliJ IDEA ###
+.idea/
+*.iml
