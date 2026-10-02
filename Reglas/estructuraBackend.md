@@ -72,7 +72,6 @@ Backend/
 |---|---|---|---|---|
 | `Backend/backend/src/main/java/com/example/backend/BackendApplication.java` | Java / Spring Boot | Clase principal de arranque. | `@SpringBootApplication` | Inicia la aplicación. |
 | `Backend/backend/src/main/resources/application.properties` | Properties | Configuración principal de Spring Boot y PostgreSQL. | `spring.datasource.*` y `spring.jpa.*` | Configura datasource y JPA. |
-| `Backend/backend/src/main/java/com/example/backend/config/SupabaseDatabaseConfig.java` | Java / Config | DataSource JDBC opcional para Supabase. | `JdbcTemplate`, `DriverManagerDataSource` | Define bean para conexión directa. |
 | `Backend/backend/src/main/java/com/example/backend/config/CorsConfig.java` | Java / Config | CORS para desarrollo. | `WebMvcConfigurer` | Expone endpoints a frontend. |
 | `Backend/backend/src/main/java/com/example/backend/controller/PruebaController.java` | Controller | Prueba de conexión a PostgreSQL. | `JdbcTemplate` | Consulta `SELECT 1`. |
 | `Backend/backend/src/main/java/com/example/backend/shared/AbstractCrudService.java` | Clase base | CRUD genérico en memoria. | `CrudStore` | Base para servicios principales. |
@@ -99,7 +98,6 @@ Backend/
 | `Backend/backend/pom.xml` | Sí existe. Define proyecto Spring Boot y dependencias. |
 | `Backend/backend/mvnw` y `mvnw.cmd` | Sí existen. Permiten ejecutar Maven Wrapper. |
 | `Backend/backend/src/main/resources/application.properties` | Sí existe. Configuración principal. |
-| `Backend/backend/src/main/java/com/example/backend/config/SupabaseDatabaseConfig.java` | Sí existe. Configuración adicional de datasource JDBC. |
 | `Backend/backend/src/main/java/com/example/backend/config/CorsConfig.java` | Sí existe. CORS para desarrollo. |
 | `application.yml` / `application.yaml` | No implementado actualmente. |
 | `bootstrap.yml` / `bootstrap.properties` | No implementado actualmente. |
@@ -196,28 +194,11 @@ spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
 | Perfiles de Spring | No existen | No implementado actualmente |
 | CORS | Configurado en `CorsConfig.java` | Detectado |
 
-### 5.3 `SupabaseDatabaseConfig`
+### 5.3 Configuración JDBC
 
-Archivo analizado: `Backend/backend/src/main/java/com/example/backend/config/SupabaseDatabaseConfig.java`
-
-```java
-@Configuration
-@ConditionalOnProperty(name = "supabase.db.enabled", havingValue = "true")
-public class SupabaseDatabaseConfig {
-    @Value("${supabase.db.url}")
-    private String databaseUrl;
-    @Value("${supabase.db.username:postgres}")
-    private String databaseUsername;
-    @Value("${supabase.db.password}")
-    private String databasePassword;
-}
-```
-
-**Observaciones:**
-- Esta configuración es opcional y solo se activa si `supabase.db.enabled=true` está presente.
-- En la configuración actual, esa propiedad no aparece en `application.properties`.
-- Usa `DriverManagerDataSource` con `org.postgresql.Driver` y `JdbcTemplate`.
-- No se observa uso de `spring.datasource.hikari.*` ni configuración explícita de pool en el proyecto.
+- Se eliminó la configuración JDBC secundaria `SupabaseDatabaseConfig`.
+- La aplicación usa el `DataSource` y `JdbcTemplate` autoconfigurados por Spring Boot a partir de `spring.datasource.*`.
+- Los servicios de obras e imágenes usan ese `JdbcTemplate` cuando está disponible; de lo contrario, mantienen su alternativa en memoria.
 
 ---
 
@@ -861,13 +842,10 @@ PostgreSQL / Supabase
 
 **Justificación:** `CrudStore.java`, `AbstractCrudService.java`, `ObraService.java`, `ImagenObraService.java`.
 
-### 19.3 `supabase.db.enabled` no está habilitado por defecto
+### 19.3 Solo existe la configuración datasource principal
 
-- `SupabaseDatabaseConfig` solo se activa si `supabase.db.enabled=true`.
-- No se observa esa propiedad en `application.properties`.
-- Por lo tanto, la configuración extra de `SupabaseDatabaseConfig` no está activa por defecto.
-
-**Justificación:** `SupabaseDatabaseConfig.java` y `application.properties`.
+- La conexión JDBC se configura mediante `spring.datasource.*` en `application.properties`.
+- No se mantiene una configuración secundaria con propiedades `supabase.db.*`.
 
 ### 19.4 Existe una inconsistencia entre el soft delete y el delete real
 
@@ -1063,7 +1041,7 @@ Se verificaron:
 - Versión explícita de Maven en el proyecto: `No determinado en los archivos analizados.`
 - Puerto de la aplicación: `No determinado en los archivos analizados.`
 - Si el entorno actual tiene variables de entorno válidas para Supabase: `No determinado en los archivos analizados.`
-- Si la configuración de `supabase.db.enabled` está activa por defecto: `No implementado actualmente.`
+- Si Railway aplica sobrescrituras de `spring.datasource.*`: `No determinado en los archivos analizados.`
 
 ---
 
