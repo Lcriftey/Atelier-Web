@@ -1,4 +1,5 @@
 ### Frontend ###
+node_modules/
 Fronted/node_modules/
 Fronted/dist/
 
