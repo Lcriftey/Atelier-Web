@@ -103,8 +103,10 @@
   width: 2.75rem;
 }
 
-.socialList a:hover {
-  opacity: 0.65;
+.socialList a:hover,
+.socialList a:focus-visible {
+  color: var(--color-gold);
+  opacity: 1;
 }
 
 .socialList a:focus-visible {

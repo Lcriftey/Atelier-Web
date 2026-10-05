@@ -6,7 +6,7 @@ const navigation = [
   { href: '#home', label: 'Inicio' },
   { href: '#catalog', label: 'Obras' },
   { href: '#classes', label: 'Clases' },
-  { href: '#about', label: 'El artista' },
+  { href: '#about', label: 'Sobre mí' },
   { href: '#custom-orders', label: 'Encargos' },
 ];
 

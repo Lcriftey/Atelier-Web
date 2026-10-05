@@ -30,57 +30,6 @@
   color: var(--color-gold);
 }
 
-.cart {
-  align-items: center;
-  display: inline-flex;
-  justify-content: center;
-  min-width: 2rem;
-}
-
-.cartIcon {
-  display: inline-block;
-  height: 1.5rem;
-  position: relative;
-  width: 2rem;
-}
-
-.cartIcon::before {
-  border: 2px solid var(--color-navy);
-  border-top: 0;
-  content: '';
-  height: 0.7rem;
-  left: 0.38rem;
-  position: absolute;
-  top: 0.35rem;
-  transform: skew(-8deg);
-  width: 1.3rem;
-}
-
-.cartIcon::after {
-  background: var(--color-navy);
-  border: 2px solid var(--color-navy);
-  border-radius: 50%;
-  bottom: 0.02rem;
-  content: '';
-  height: 0.25rem;
-  left: 0.55rem;
-  position: absolute;
-  width: 0.25rem;
-  box-shadow: 0.9rem 0 0 -2px var(--color-navy);
-}
-
-.cart:hover .cartIcon::before,
-.cart:focus-visible .cartIcon::before {
-  border-color: var(--color-gold);
-}
-
-.cart:hover .cartIcon::after,
-.cart:focus-visible .cartIcon::after {
-  background: var(--color-gold);
-  border-color: var(--color-gold);
-  box-shadow: 0.9rem 0 0 -2px var(--color-gold);
-}
-
 .menuButton {
   background: transparent;
   border: 0;
@@ -116,14 +65,20 @@
   }
 
   .menuButton span {
-    background: var(--color-gold);
+    background: var(--color-white);
     display: block;
     height: 2px;
+    transition: background-color 180ms ease;
     width: 1.7rem;
   }
 
+  .menuButton:hover span,
+  .menuButton:focus-visible span {
+    background: var(--color-gold);
+  }
+
   .links {
-    background: #efebe4;
+    background: var(--color-navy);
     border: 1px solid var(--color-gold);
     display: none;
     flex-direction: column;
@@ -134,6 +89,15 @@
     top: 3.6rem;
     width: min(15rem, 80vw);
     z-index: 2;
+  }
+
+  .links a {
+    color: var(--color-white);
+  }
+
+  .links a:hover,
+  .links a:focus-visible {
+    color: var(--color-gold);
   }
 
   .linksOpen {

@@ -42,9 +42,6 @@ function Navigation() {
             {link.label}
           </a>
         ))}
-        <a aria-label="Ver carrito" className={styles.cart} href="#cart">
-          <span aria-hidden="true">♧</span>
-        </a>
       </div>
     </nav>
   );
