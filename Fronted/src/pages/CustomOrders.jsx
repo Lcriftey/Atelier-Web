@@ -114,12 +114,12 @@ function CustomOrders({ works = [] }) {
           </a>
         </div>
         <a
-          aria-label={`Descubrir la galería. Obra destacada: ${featuredWork?.name || 'obra de arte de Academia Atelier'}`}
+          aria-label={`Descubrir la galería. Obra destacada: ${featuredWork?.name || 'obra de arte de 11-10 Atelier academia de arte'}`}
           className={styles.examplesArtwork}
           href="#catalog"
         >
           <img
-            alt={featuredWork?.name || featuredWork?.alt || 'Obra de arte de Academia Atelier'}
+            alt={featuredWork?.name || featuredWork?.alt || 'Obra de arte de 11-10 Atelier academia de arte'}
             src={featuredImage}
           />
           <span className={styles.examplesArtworkMeta}>

@@ -172,7 +172,7 @@ function AdminObras() {
   return (
     <main className={styles.page}>
       <header className={styles.header}>
-        <p className={styles.eyebrow}>Academia Atelier / Administración</p>
+        <p className={styles.eyebrow}>11-10 Atelier academia de arte / Administración</p>
         <h1>Catálogo de obras</h1>
         <p>Gestiona las piezas del catálogo y sus imágenes desde este espacio privado.</p>
       </header>

@@ -247,7 +247,7 @@ function ClassesSection({
     // Este arreglo se convierte en un mensaje de varias lineas para WhatsApp.
     // Para cambiar el texto inicial, modifica la primera cadena.
     const message = [
-      'Hola, quiero solicitar una clase en Academia Atelier.',
+      'Hola, quiero solicitar una clase en 11-10 Atelier academia de arte.',
       '',
       formatField('Nombre', form.name),
       formatField('WhatsApp', form.whatsapp),
@@ -273,7 +273,7 @@ function ClassesSection({
     <section className={`${styles.classes} ${isHero ? styles.heroClasses : ''}`} id="classes">
       {isHero && <div className={styles.enrollmentHero}>
         <div className={styles.enrollmentCopy}>
-          <p className={styles.eyebrow}>Clases particulares de arte</p>
+          <p className={styles.eyebrow}>Clases personalizadas de arte</p>
           <h1>¡Trabajemos juntos!</h1>
           <p>
             Quizás quieras aprender, explorar una nueva técnica o convertir una idea 
@@ -433,9 +433,9 @@ function ClassesSection({
             Tipo de clase
             <select name="classType" onChange={handleChange} required value={form.classType}>
               <option value="">Selecciona una opción</option>
-              <option value="Iniciación a la pintura">Iniciación a la pintura</option>
-              <option value="Técnica y color">Técnica y color</option>
-              <option value="Clase personalizada">Clase personalizada</option>
+              <option value="Dibujo">Dibujo</option>
+              <option value="Pintura">Pintura</option>
+              <option value="Escultura">Escultura</option>
             </select>
           </label>
           <label>

@@ -40,7 +40,7 @@ function ArtistView() {
           <p className={styles.eyebrow}>Propuesta artística</p>
           <h2>Crear es una forma de permanecer atento.</h2>
           <img alt="Detalle de una composición abstracta en tonos azules" src={proposalPoster} />
-          <p>Academia Atelier nace de una práctica paciente: observar la materia, escuchar el color y convertir cada hallazgo en una conversación.</p>
+          <p>11-10 Atelier academia de arte nace de una práctica paciente: observar la materia, escuchar el color y convertir cada hallazgo en una conversación.</p>
         </article>
       </section>
     </main>

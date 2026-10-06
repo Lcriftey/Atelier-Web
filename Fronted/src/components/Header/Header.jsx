@@ -27,8 +27,8 @@ function Header() {
 
   return (
     <header className={`${styles.header} ${isVisible ? styles.headerVisible : styles.headerHidden}`}>
-      <a aria-label="Academia Atelier, inicio" className={styles.brand} href="/">
-        <img alt="Logo de Academia Atelier" className={styles.logo} src={logo} />
+      <a aria-label="11-10 Atelier academia de arte, inicio" className={styles.brand} href="/">
+        <img alt="Logo de 11-10 Atelier academia de arte" className={styles.logo} src={logo} />
       </a>
       <Navigation />
     </header>

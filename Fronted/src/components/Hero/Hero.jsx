@@ -8,7 +8,7 @@ function Hero() {
   return (
     <section className={styles.hero} id="home">
       <div className={styles.copy}>
-        <p className={styles.eyebrow}>Academia Atelier / Escuela de arte</p>
+        <p className={styles.eyebrow}>11-10 Atelier academia de arte / Escuela de arte</p>
         <h1>Aprende a mirar. Atrévete a crear.</h1>
         <p className={styles.description}>
           En nuestra academia encontrarás cursos diseñados para aprender a tu

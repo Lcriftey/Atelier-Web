@@ -47,12 +47,12 @@ function Footer() {
     <footer className={styles.footer} id="contact">
       <div className={styles.inner}>
         <div className={styles.brandBlock}>
-          <a aria-label="Academia Atelier, inicio" className={styles.brand} href="#home">
-            <img alt="Logo de Academia Atelier" className={styles.logo} src={logo} />
-            <span>Academia Atelier</span>
+          <a aria-label="11-10 Atelier academia de arte, inicio" className={styles.brand} href="#home">
+            <img alt="Logo de 11-10 Atelier academia de arte" className={styles.logo} src={logo} />
+            <span>11-10 Atelier academia de arte</span>
           </a>
           <p>
-            Arte contemporáneo, clases y obras originales pensadas para espacios con identidad.
+            Arte académico, clases y obras originales pensadas para espacios con identidad.
           </p>
         </div>
 
@@ -70,8 +70,8 @@ function Footer() {
         <div className={styles.column}>
           <h3>Contacto</h3>
           <div className={styles.contactList}>
-            <a href="mailto:hola@academiaatelier.com">hola@academiaatelier.com</a>
-            <a href={`https://wa.me/${WHATSAPP_NUMBER}?text=Hola%20Academia%20Atelier%2C%20me%20gustar%C3%ADa%20consultar%20sobre%20una%20obra%20o%20una%20clase.`} target="_blank" rel="noreferrer">
+            <a href="mailto:11.10atelierp1@gmail.com">11.10atelierp1@gmail.com</a>
+            <a href={`https://wa.me/${WHATSAPP_NUMBER}?text=Hola%2011-10%20Atelier%20academia%20de%20arte%2C%20me%20gustar%C3%ADa%20consultar%20sobre%20una%20obra%20o%20una%20clase.`} target="_blank" rel="noreferrer">
               WhatsApp
             </a>
           </div>
@@ -90,7 +90,7 @@ function Footer() {
       </div>
 
       <div className={styles.meta}>
-        <span>© 2026 Academia Atelier</span>
+        <span>© 2026 11-10 Atelier academia de arte</span>
         <span>Todos los derechos reservados</span>
       </div>
     </footer>
