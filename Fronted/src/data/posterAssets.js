@@ -5,7 +5,6 @@ import poster4 from '../../Assets/Posters/Poster4.webp';
 import poster5 from '../../Assets/Posters/Poster5.webp';
 import poster6 from '../../Assets/Posters/Poster6.webp';
 import poster7 from '../../Assets/Posters/Poster7.webp';
-import poster8 from '../../Assets/Posters/Poster8.webp';
 import poster9 from '../../Assets/Posters/Poster9.webp';
 
 export const posterImages = [
@@ -16,7 +15,6 @@ export const posterImages = [
   poster5,
   poster6,
   poster7,
-  poster8,
   poster9,
 ];
 
