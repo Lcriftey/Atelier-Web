@@ -274,7 +274,7 @@ function ClassesSection({
       {isHero && <div className={styles.enrollmentHero}>
         <div className={styles.enrollmentCopy}>
           <p className={styles.eyebrow}>Clases personalizadas de arte</p>
-          <h1>¡Trabajemos juntos!</h1>
+          <h1>Cursos de dibujo, pintura y escultura</h1>
           <p>
             Quizás quieras aprender, explorar una nueva técnica o convertir una idea 
             que tienes en una obra única. Cuéntame qué tienes en mente y encontremos 
@@ -314,9 +314,9 @@ function ClassesSection({
             acompañar tu proceso, tengas experiencia previa o estés comenzando.
           </p>
           <div className={styles.learningList}>
-            <span>01 <strong>Técnicas pictóricas</strong></span>
-            <span>02 <strong>Composición y color</strong></span>
-            <span>03 <strong>Proceso creativo</strong></span>
+            <span>01 <strong>Dibujo</strong></span>
+            <span>02 <strong>Pintura</strong></span>
+            <span>03 <strong>Escultura</strong></span>
           </div>
         </div>
         <div className={styles.imageFrame}>
@@ -326,7 +326,6 @@ function ClassesSection({
             loading="lazy"
             src={getRandomPoster()}
           />
-          <span aria-hidden="true" className={styles.imageCaption}>Taller / práctica / presencia</span>
         </div>
       </div>}
 
@@ -346,7 +345,7 @@ function ClassesSection({
           </details>
           <details>
             <summary>¿Las clases son individuales?</summary>
-            <p>Se pueden agendar de forma individual o para grupos pequeños. En Atelier priorizamos un enfoque personalizado para garantizar la calidad de cada clase.</p>
+            <p>Se pueden agendar de forma individual o para grupos pequeños. En 11-10 Atelier priorizamos un enfoque personalizado para garantizar la calidad de cada clase.</p>
           </details>
           <details>
             <summary>¿Qué materiales debo llevar?</summary>

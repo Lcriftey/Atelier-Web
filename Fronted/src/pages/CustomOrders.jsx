@@ -28,11 +28,11 @@ const processSteps = [
 
 const details = [
   ['Tipo de obras', 'Piezas abstractas, retratos, paisajes y composiciones creadas a partir de una historia personal.'],
-  ['Técnicas', 'Óleo, acrílico, pigmento y técnica mixta, según el lenguaje que mejor sirva a tu visión.'],
+  ['Técnicas', 'Dibujo, pintura y escultura lo que mejor se adapte a tu visión.'],
   ['Materiales', 'Lienzo y soportes preparados con materiales seleccionados para conservar la textura y el color.'],
   ['Tamaños', 'Formatos pequeños, medianos y de gran escala. El tamaño se define según tu deseo.'],
   ['Tiempos', 'El desarrollo es independiente de cada trabajo, esta sujeto a la complejidad de la obra, disponibilidad de materiales y nuestra agenda.'],
-  ['Precio', 'Se calcula según tamaño, técnica, materiales, nivel de detalle, urgencia y condiciones de entrega.'],
+  ['Precio', 'Se calcula según tamaño, técnica, materiales, nivel de detalle y condiciones de entrega.'],
 ];
 
 function CustomOrders({ works = [] }) {

@@ -22,13 +22,7 @@ function ArtistView() {
           <p className={styles.eyebrow}>Conocimiento técnico</p>
           <h2>La materia también cuenta.</h2>
           <img alt="Pinceles y materiales de pintura en el taller" src={techniquePoster} />
-          <p>Óleo, acrílico, pigmento y técnica mixta se convierten en capas para registrar decisiones, correcciones y cambios de luz.</p>
-          <ul className={styles.techniques}>
-            <li>Óleo</li>
-            <li>Acrílico</li>
-            <li>Pigmento</li>
-            <li>Técnica mixta</li>
-          </ul>
+          <p>A lo largo de mis años de enseñanza y práctica, dominé las técnicas de dibujo, pintura y escultura para expresar ideas y emociones.</p>
         </article>
         <article className={`${styles.mosaicTile} ${styles.mosaicExperience}`}>
           <p className={styles.eyebrow}>Experiencia</p>
