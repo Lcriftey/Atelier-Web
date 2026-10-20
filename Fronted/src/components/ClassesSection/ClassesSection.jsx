@@ -15,8 +15,7 @@
  * Conceptos de React usados aqui:
  * - `useState`: guarda datos que pueden cambiar mientras la persona usa el
  *   formulario. Se actualiza llamando a la funcion que empieza por `set`.
- * - `useMemo`: calcula las horas disponibles solo cuando cambia la fecha o
- *   la hora de inicio. No es necesario modificarlo para cambiar el diseno.
+ * - `useMemo`: calcula los bloques disponibles cuando cambia la fecha.
  * - Props: `isHero` y `showForm` llegan desde otro archivo y deciden que
  *   partes se muestran. `isHero` muestra el llamado a inscribirse y `showForm`
  *   conserva el cuestionario para la pagina de clases.
@@ -39,14 +38,13 @@ import styles from './ClassesSection.module.css';
 // Nombre con el que el navegador guarda las solicitudes en localStorage.
 const REQUESTS_STORAGE_KEY = 'academia-atelier-class-requests';
 
-// Horarios de lunes a viernes. Cada posicion de inicio corresponde a una
-// posicion de salida; la validacion tambien impide elegir una salida anterior.
-const WEEKDAY_START_TIMES = ['07:00', '08:00', '09:30', '10:30', '14:00', '15:00', '16:30', '17:30', '19:00', '20:00'];
-const WEEKDAY_END_TIMES = ['08:00', '09:00', '10:30', '11:30', '15:00', '16:00', '17:30', '18:30', '20:00', '21:00'];
-
-// Los sabados tienen un horario diferente y el domingo no ofrece horarios.
-const SATURDAY_START_TIMES = ['07:00', '08:00', '09:30', '10:30', '14:00', '15:00', '16:30', '17:30'];
-const SATURDAY_END_TIMES = ['08:00', '09:00', '10:30', '11:30', '15:00', '16:00', '17:30', '18:30'];
+const AVAILABLE_SCHEDULE_BLOCKS = [
+  { value: '07:00-09:00', label: '7:00am - 9:00am', startTime: '07:00', endTime: '09:00' },
+  { value: '09:30-11:30', label: '9:30am - 11:30am', startTime: '09:30', endTime: '11:30' },
+  { value: '14:00-16:00', label: '2:00pm - 4:00pm', startTime: '14:00', endTime: '16:00' },
+  { value: '16:30-18:30', label: '4:30pm - 6:30pm', startTime: '16:30', endTime: '18:30' },
+  { value: '19:00-21:00', label: '7:00pm - 9:00pm', startTime: '19:00', endTime: '21:00' },
+];
 
 // Este objeto representa todos los datos que controla el formulario.
 // Para agregar un nuevo campo, primero agregalo aqui y despues crea su label
@@ -56,8 +54,7 @@ const initialForm = {
   whatsapp: '',
   email: '',
   date: '',
-  startTime: '',
-  endTime: '',
+  scheduleBlock: '',
   classType: '',
   students: '1',
   goals: '',
@@ -81,47 +78,20 @@ function getDateParts(date) {
   return new Date(year, month - 1, day);
 }
 
-// Convierte una hora interna como "14:00" a un texto legible como "2:00 p. m.".
-// El valor interno sigue siendo de 24 horas para que las comparaciones sean fiables.
-function formatTime(time) {
-  if (!time) return '';
-  const [hours, minutes] = time.split(':').map(Number);
-  const suffix = hours >= 12 ? 'p. m.' : 'a. m.';
-  const displayHours = hours % 12 || 12;
-  return `${displayHours}:${String(minutes).padStart(2, '0')} ${suffix}`;
-}
-
-// Decide que horas de inicio aparecen segun el dia escogido.
-// En la fecha de hoy elimina las horas que ya pasaron.
-function getAvailableStartTimes(date) {
+// Devuelve los bloques habilitados para la fecha y descarta los que ya
+// comenzaron cuando se solicita una clase para hoy.
+function getAvailableScheduleBlocks(date) {
   if (!date) return [];
 
   const now = new Date();
   const today = getToday();
   const dayOfWeek = getDateParts(date).getDay();
-  const startTimes = dayOfWeek === 0
-    ? []
-    : dayOfWeek === 6 ? SATURDAY_START_TIMES : WEEKDAY_START_TIMES;
+  if (dayOfWeek === 0) return [];
 
-  return startTimes.filter((time) => {
+  return AVAILABLE_SCHEDULE_BLOCKS.filter(({ startTime }) => {
     if (date !== today) return true;
-    const [hours, minutes] = time.split(':').map(Number);
+    const [hours, minutes] = startTime.split(':').map(Number);
     return hours * 60 + minutes > now.getHours() * 60 + now.getMinutes();
-  });
-}
-
-// Devuelve las horas de salida posteriores a la hora de inicio seleccionada.
-function getAvailableEndTimes(date, startTime) {
-  if (!date || !startTime) return [];
-
-  const dayOfWeek = getDateParts(date).getDay();
-  const endTimes = dayOfWeek === 6 ? SATURDAY_END_TIMES : WEEKDAY_END_TIMES;
-  const [startHours, startMinutes] = startTime.split(':').map(Number);
-  const startValue = startHours * 60 + startMinutes;
-
-  return endTimes.filter((time) => {
-    const [hours, minutes] = time.split(':').map(Number);
-    return hours * 60 + minutes > startValue;
   });
 }
 
@@ -159,15 +129,10 @@ function ClassesSection({
   // Mensaje temporal para errores de horario o confirmacion de envio.
   const [feedback, setFeedback] = useState('');
 
-  // Estas listas alimentan los dos select de horario.
-  // Se recalculan cuando cambia la fecha o la hora de inicio.
-  const availableStartTimes = useMemo(
-    () => getAvailableStartTimes(form.date),
+  // Esta lista alimenta el selector unico de bloques de horario.
+  const availableScheduleBlocks = useMemo(
+    () => getAvailableScheduleBlocks(form.date),
     [form.date],
-  );
-  const availableEndTimes = useMemo(
-    () => getAvailableEndTimes(form.date, form.startTime),
-    [form.date, form.startTime],
   );
 
   // Se ejecuta cada vez que cambia cualquier input del formulario.
@@ -175,16 +140,9 @@ function ClassesSection({
   const handleChange = ({ target }) => {
     setForm((currentForm) => {
       const nextForm = { ...currentForm, [target.name]: target.value };
-      // Al cambiar la fecha, las horas anteriores ya no son confiables.
-      // Se limpian para obligar a escogerlas de nuevo.
+      // Al cambiar la fecha, se debe volver a escoger un bloque disponible.
       if (target.name === 'date') {
-        nextForm.startTime = '';
-        nextForm.endTime = '';
-      }
-
-      // La hora de salida depende de la hora de inicio.
-      if (target.name === 'startTime') {
-        nextForm.endTime = '';
+        nextForm.scheduleBlock = '';
       }
       return nextForm;
     });
@@ -200,11 +158,12 @@ function ClassesSection({
     const selectedDate = getDateParts(form.date);
     const today = getDateParts(getToday());
     const isValidDate = form.date && selectedDate >= today && selectedDate.getDay() !== 0;
-    const isValidTime = availableStartTimes.includes(form.startTime)
-      && availableEndTimes.includes(form.endTime);
+    const selectedScheduleBlock = availableScheduleBlocks.find(
+      ({ value }) => value === form.scheduleBlock,
+    );
 
     // Si el horario no es valido, mostramos el mensaje y no continuamos.
-    if (!isValidDate || !isValidTime) {
+    if (!isValidDate || !selectedScheduleBlock) {
       setFeedback('Selecciona un día y horario disponible para agendar tu clase.');
       return;
     }
@@ -219,9 +178,10 @@ function ClassesSection({
         email: form.email,
       },
       date: form.date,
-      time: `${form.startTime} - ${form.endTime}`,
-      startTime: form.startTime,
-      endTime: form.endTime,
+      time: `${selectedScheduleBlock.startTime} - ${selectedScheduleBlock.endTime}`,
+      startTime: selectedScheduleBlock.startTime,
+      endTime: selectedScheduleBlock.endTime,
+      scheduleBlock: selectedScheduleBlock.label,
       classType: form.classType,
       students: Number(form.students),
       description: form.goals,
@@ -253,8 +213,7 @@ function ClassesSection({
       formatField('WhatsApp', form.whatsapp),
       formatField('Correo', form.email),
       formatField('Fecha deseada', form.date),
-      formatField('Hora de entrada', formatTime(form.startTime)),
-      formatField('Hora de salida', formatTime(form.endTime)),
+      formatField('Horarios disponibles', selectedScheduleBlock.label),
       formatField('Tipo de clase', form.classType),
       formatField('Número de estudiantes', form.students),
       formatField('Qué busco aprender', form.goals),
@@ -411,20 +370,11 @@ function ClassesSection({
             <input aria-describedby="schedule-help" min={getToday()} name="date" onChange={handleChange} required type="date" value={form.date} />
           </label>
           <label>
-            Hora de entrada
-            <select name="startTime" onChange={handleChange} required value={form.startTime}>
-              <option value="">Selecciona una hora</option>
-              {availableStartTimes.map((time) => (
-                <option key={time} value={time}>{formatTime(time)}</option>
-              ))}
-            </select>
-          </label>
-          <label>
-            Hora de salida
-            <select name="endTime" onChange={handleChange} required value={form.endTime}>
-              <option value="">Selecciona una hora</option>
-              {availableEndTimes.map((time) => (
-                <option key={time} value={time}>{formatTime(time)}</option>
+            Horarios disponibles
+            <select aria-describedby="schedule-help" name="scheduleBlock" onChange={handleChange} required value={form.scheduleBlock}>
+              <option value="">Selecciona un horario</option>
+              {availableScheduleBlocks.map(({ value, label }) => (
+                <option key={value} value={value}>{label}</option>
               ))}
             </select>
           </label>
@@ -444,7 +394,7 @@ function ClassesSection({
 
           {/* Ayuda visible sobre los horarios atendidos. */}
           <p className={`${styles.fullField} ${styles.scheduleHelp}`} id="schedule-help">
-            Atención de lunes a viernes de 7:00 a. m. a 9:00 p. m. y sábados hasta las 6:30 p. m.
+            Los domingos no hay clases. Selecciona un bloque disponible para la fecha elegida.
           </p>
           <label className={styles.fullField}>
             ¿Qué te gustaría aprender?
