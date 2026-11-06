@@ -9,6 +9,7 @@ import CustomOrdersSection from './components/CustomOrdersSection/CustomOrdersSe
 import Footer from './components/Footer/Footer';
 import CustomOrders from './pages/CustomOrders';
 import AdminObras from './pages/AdminObras';
+import AdminAuthGate from './components/AdminAuthGate';
 import featuredProducts from './data/featuredProducts';
 import obrasApi from './api/obrasApi';
 import imagenesObraApi from './api/imagenesObraApi';
@@ -91,7 +92,7 @@ function App() {
   const detailProduct = catalogProducts.find((product) => product.id === detailId);
 
   if (route === '#admin-obras') {
-    return <AdminObras />;
+    return <AdminAuthGate><AdminObras /></AdminAuthGate>;
   }
 
   if (route === '#catalog') {

@@ -1,0 +1,15 @@
+﻿services:
+  - type: web
+    name: academia-atelier-backend
+    runtime: docker
+    rootDir: Backend/backend
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/test-db
+    envVars:
+      - key: SPRING_DATASOURCE_URL
+        sync: false
+      - key: SPRING_DATASOURCE_USERNAME
+        sync: false
+      - key: SPRING_DATASOURCE_PASSWORD
+        sync: false

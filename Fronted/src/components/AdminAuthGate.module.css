@@ -1,0 +1,24 @@
+.loginPage, .statePage { align-items: center; background: var(--color-paper); color: var(--color-ink); display: flex; justify-content: center; min-height: 100vh; padding: 1.25rem; }
+.loginPanel, .messagePanel { background: var(--color-white); border: 1px solid #ded8cc; border-top: 3px solid var(--color-gold); max-width: 27rem; padding: clamp(1.5rem, 5vw, 2.5rem); width: 100%; }
+.eyebrow { color: var(--color-gold-dark); font-size: .75rem; margin: 0 0 .65rem; text-transform: uppercase; }
+.loginPanel h1, .messagePanel h1 { color: var(--color-navy); font-family: var(--font-display); font-size: 2rem; font-weight: 500; margin: 0 0 1.5rem; }
+.messagePanel p:last-child { line-height: 1.55; margin-bottom: 0; }
+.loginForm { display: grid; gap: 1.1rem; }
+.loginForm label { color: var(--color-navy); display: grid; font-size: .875rem; gap: .4rem; }
+.loginForm input { background: var(--color-paper); border: 1px solid #cfc7b8; color: var(--color-ink); font: inherit; min-width: 0; padding: .7rem; width: 100%; }
+.loginForm input:focus { border-color: var(--color-gold-dark); outline: 2px solid #e6d5ae; }
+.passwordControl { align-items: center; display: flex; gap: .5rem; min-width: 0; }
+.passwordControl button, .sessionBar button { background: transparent; border: 0; color: var(--color-navy); cursor: pointer; font: inherit; text-decoration: underline; }
+.submitButton { background: var(--color-navy); border: 0; color: var(--color-white); cursor: pointer; font: inherit; padding: .8rem 1rem; }
+.submitButton:hover, .submitButton:focus-visible { background: var(--color-gold-dark); }
+.submitButton:disabled { cursor: wait; opacity: .6; }
+.error, .logoutError { color: #9a3f35; font-size: .875rem; margin: 0; }
+.sessionBar { align-items: center; background: var(--color-navy); border-bottom: 2px solid var(--color-gold); color: var(--color-white); display: flex; font-size: .72rem; gap: 1rem; justify-content: space-between; min-height: 2.35rem; padding: .35rem clamp(1rem, 4vw, 4rem); }
+.sessionBrand { align-items: baseline; display: flex; gap: .55rem; min-width: 0; }
+.sessionBrand > span:nth-child(2) { color: var(--color-white); font-family: var(--font-display); font-size: .9rem; white-space: nowrap; }
+.sessionBrand small { border-left: 1px solid rgba(251, 250, 247, .35); color: rgba(251, 250, 247, .7); font-size: .62rem; padding-left: .55rem; }
+.sessionIcon { align-self: center; color: var(--color-gold); font-size: .95rem; line-height: 1; }
+.sessionBar button { color: var(--color-white); font-size: .68rem; white-space: nowrap; }
+.sessionBar button:hover, .sessionBar button:focus-visible { color: var(--color-gold); }
+.logoutError { background: var(--color-white); padding: .5rem 1rem; text-align: right; }
+@media (max-width: 560px) { .loginPage, .statePage { padding: 1rem; } .sessionBar { gap: .5rem; } .sessionBrand { gap: .35rem; } .sessionBrand > span:nth-child(2) { font-size: .78rem; } .sessionBrand small { font-size: .55rem; padding-left: .35rem; } .sessionBar button { font-size: .62rem; } }

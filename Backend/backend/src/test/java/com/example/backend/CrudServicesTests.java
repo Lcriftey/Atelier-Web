@@ -55,4 +55,25 @@ class CrudServicesTests {
 
         assertThrows(ResourceNotFoundException.class, () -> service.crear(solicitud));
     }
+
+        @Test
+        void asignaOrdenSecuencialYReservaCeroParaLaImagenPrincipal() {
+        ObraService obraService = new ObraService();
+        Obra obra = obraService.crear(new Obra(null, "Obra", "Descripcion", "Tecnica",
+            BigDecimal.ONE, "COP", EstadoObra.NO_DISPONIBLE,
+            LocalDate.of(2026, 9, 11), null, null, null));
+        ImagenObraService imagenService = new ImagenObraService(obraService);
+
+        ImagenObra primera = imagenService.crear(new ImagenObra(null, obra.id(), "https://example.com/1.jpg",
+            obra.nombre(), 0, false, null));
+        ImagenObra segunda = imagenService.crear(new ImagenObra(null, obra.id(), "https://example.com/2.jpg",
+            obra.nombre(), 0, false, null));
+        ImagenObra principal = imagenService.crear(new ImagenObra(null, obra.id(), "https://example.com/main.jpg",
+            obra.nombre(), 0, true, null));
+
+        assertEquals(1, imagenService.buscar(primera.id(), "imagen").ordenVisualizacion());
+        assertEquals(2, imagenService.buscar(segunda.id(), "imagen").ordenVisualizacion());
+        assertEquals(0, principal.ordenVisualizacion());
+        assertEquals(1, imagenService.listar().stream().filter(ImagenObra::esPrincipal).count());
+        }
 }
