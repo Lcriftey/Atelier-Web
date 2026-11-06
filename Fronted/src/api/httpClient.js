@@ -1,4 +1,4 @@
-const API_BASE_URL ='https://atelier-web-production-eda3.up.railway.app';
+const API_BASE_URL ='https://atelier-web-1vvp.onrender.com';
 
 async function request(path, options = {}) {
   const response = await fetch(`${API_BASE_URL}${path}`, {
