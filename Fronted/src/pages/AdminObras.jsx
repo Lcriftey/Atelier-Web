@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import obrasApi from '../api/obrasApi';
 import imagenesObraApi from '../api/imagenesObraApi';
+import { createGalleryObjectPath, MAX_GALLERY_IMAGE_SIZE, uploadGalleryImage, validateGalleryImage } from '../api/galleryStorageApi';
 import styles from './AdminObras.module.css';
 
 const emptyObra = {
@@ -16,13 +17,31 @@ const emptyObra = {
 
 const emptyImagen = {
   urlImagen: '',
-  textoAlternativo: '',
-  ordenVisualizacion: 0,
   esPrincipal: false,
 };
 
 function formatPrice(value, currency) {
   return new Intl.NumberFormat('es-CO', { style: 'currency', currency }).format(value);
+}
+
+function getStorageErrorMessage(error) {
+  const status = String(error?.statusCode || error?.status || '');
+  const detail = `${error?.code || ''} ${error?.message || ''}`.toLowerCase();
+
+  if (error?.code === 'duplicate_object') return error.message;
+  if (status === '401' || /invalid.?jwt|expired.?token|jwt expired/.test(detail)) {
+    return 'La sesión de Supabase no es válida o expiró. Vuelve a iniciar sesión.';
+  }
+  if (status === '403' || /row.level security|not allowed|unauthorized|permission/.test(detail)) {
+    return 'Supabase Storage no autorizó la carga. Verifica los permisos del bucket Gallery.';
+  }
+  if (status === '413' || /too large|payload too large/.test(detail)) {
+    return 'La imagen supera el límite permitido por el almacenamiento.';
+  }
+  if (error instanceof TypeError || /network|fetch|timeout|timed out/.test(detail)) {
+    return 'No se pudo conectar con Storage. Reintenta la carga con el mismo archivo.';
+  }
+  return 'No se pudo subir la imagen. Inténtalo de nuevo.';
 }
 
 function AdminObras() {
@@ -32,6 +51,12 @@ function AdminObras() {
   const [editingId, setEditingId] = useState(null);
   const [obraForm, setObraForm] = useState(emptyObra);
   const [imagenForm, setImagenForm] = useState(emptyImagen);
+  const fileInputRef = useRef(null);
+  const imageSubmitLock = useRef(false);
+  const [selectedLocalImage, setSelectedLocalImage] = useState(null);
+  const [localPreviewUrl, setLocalPreviewUrl] = useState('');
+    const [pendingStorageImage, setPendingStorageImage] = useState(null);
+    const [imageSuccessOpen, setImageSuccessOpen] = useState(false);
   const [loadState, setLoadState] = useState({ status: 'loading', message: '' });
   const [saveState, setSaveState] = useState({ status: 'idle', message: '' });
   const [deleteState, setDeleteState] = useState({ status: 'idle', message: '' });
@@ -42,6 +67,17 @@ function AdminObras() {
     () => imagenes.filter((imagen) => imagen.obraId === selectedObraId),
     [imagenes, selectedObraId],
   );
+  const hasPrimaryImage = selectedImages.some((imagen) => imagen.esPrincipal);
+
+  useEffect(() => {
+    if (!selectedLocalImage) {
+      setLocalPreviewUrl('');
+      return undefined;
+    }
+    const previewUrl = URL.createObjectURL(selectedLocalImage.file);
+    setLocalPreviewUrl(previewUrl);
+    return () => URL.revokeObjectURL(previewUrl);
+  }, [selectedLocalImage]);
 
   useEffect(() => {
     let active = true;
@@ -127,34 +163,131 @@ function AdminObras() {
     }
   }
 
+  async function createImageMetadata(urlImagen) {
+    const payload = {
+      obraId: selectedObraId,
+      urlImagen,
+      textoAlternativo: selectedObra.nombre,
+      ordenVisualizacion: 0,
+      esPrincipal: imagenForm.esPrincipal && !hasPrimaryImage,
+    };
+
+    try {
+      return await imagenesObraApi.create(payload);
+    } catch (postError) {
+      const existingImages = await imagenesObraApi.getAll().catch(() => null);
+      const existingImage = existingImages?.find((image) => (
+        image.obraId === selectedObraId && image.urlImagen === urlImagen
+      ));
+      if (existingImage) return existingImage;
+      throw postError;
+    }
+  }
+
   async function handleImageSubmit(event) {
     event.preventDefault();
-    if (!selectedObraId || !imagenForm.urlImagen.trim() || !imagenForm.textoAlternativo.trim()
-      || Number(imagenForm.ordenVisualizacion) < 0) {
-      setImageState({ status: 'error', message: 'Selecciona una obra y completa los datos de la imagen.' });
+    if (imageSubmitLock.current) return;
+    if (!selectedObra || (!selectedLocalImage && !pendingStorageImage)) {
+      setImageState({ status: 'error', message: 'Selecciona una obra y un archivo de imagen para continuar.' });
+      return;
+    }
+    if ((selectedLocalImage && selectedLocalImage.obraId !== selectedObraId)
+      || (pendingStorageImage && pendingStorageImage.obraId !== selectedObraId)) {
+      setImageState({ status: 'error', message: 'Vuelve a seleccionar la obra a la que pertenece esta imagen.' });
       return;
     }
 
-    setImageState({ status: 'loading', message: '' });
+    imageSubmitLock.current = true;
+    setImageState({ status: 'loading', message: pendingStorageImage ? 'Registrando metadatos...' : 'Preparando carga...' });
     try {
-      const created = await imagenesObraApi.create({
-        ...imagenForm,
-        obraId: selectedObraId,
-        ordenVisualizacion: Number(imagenForm.ordenVisualizacion),
-      });
+      let storedImage = pendingStorageImage;
+      if (!storedImage && selectedLocalImage) {
+        setSelectedLocalImage((current) => ({ ...current, uploadStarted: true }));
+        setImageState({ status: 'loading', message: 'Subiendo imagen a Gallery...' });
+        try {
+          storedImage = await uploadGalleryImage(
+            selectedLocalImage.file,
+            selectedLocalImage.path,
+            selectedLocalImage.mimeType,
+          );
+          storedImage = { ...storedImage, obraId: selectedObraId };
+          setPendingStorageImage(storedImage);
+        } catch (error) {
+          setImageState({ status: 'error', message: getStorageErrorMessage(error) });
+          return;
+        }
+      }
+
+      const imageUrl = storedImage.publicUrl;
+      setImageState({ status: 'loading', message: 'Registrando metadatos de la obra...' });
+      let created;
+      try {
+        created = await createImageMetadata(imageUrl);
+      } catch {
+        setImageState({
+          status: 'error',
+          message: storedImage
+            ? 'El archivo está en Storage, pero no se confirmaron sus metadatos. Reintenta para registrarlos sin volver a subirlo.'
+            : 'No se pudo registrar la imagen. Revisa la conexión e inténtalo de nuevo.',
+        });
+        return;
+      }
+
       setImagenes((current) => [
-        ...current.map((imagen) => (
-          created.esPrincipal && imagen.obraId === created.obraId
-            ? { ...imagen, esPrincipal: false }
-            : imagen
+        ...current.filter((image) => image.id !== created.id).map((image) => (
+          created.esPrincipal && image.obraId === created.obraId
+            ? { ...image, esPrincipal: false }
+            : image
         )),
         created,
       ]);
       setImagenForm(emptyImagen);
-      setImageState({ status: 'success', message: 'Imagen agregada.' });
+      setSelectedLocalImage(null);
+      setPendingStorageImage(null);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+      setImageState({ status: 'success', message: 'Imagen subida y registrada correctamente.' });
+      setImageSuccessOpen(true);
+    } finally {
+      imageSubmitLock.current = false;
+    }
+  }
+
+  async function handleImageFileChange(event) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    if (pendingStorageImage) {
+      event.target.value = '';
+      return;
+    }
+    if (selectedLocalImage?.uploadStarted && !window.confirm(
+      'La carga anterior pudo completarse aunque no llegara una confirmación. Si la descartas, el archivo podría quedar pendiente en Storage. ¿Continuar?',
+    )) {
+      event.target.value = '';
+      return;
+    }
+
+    setImageState({ status: 'loading', message: 'Validando imagen...' });
+    try {
+      const mimeType = await validateGalleryImage(file);
+      const path = createGalleryObjectPath(mimeType);
+      setSelectedLocalImage({ file, mimeType, path, obraId: selectedObraId, uploadStarted: false });
+      setImagenForm((current) => ({ ...current, urlImagen: '' }));
+      setImageState({ status: 'success', message: 'Imagen válida y lista para subir.' });
     } catch (error) {
+      event.target.value = '';
+      setSelectedLocalImage(null);
       setImageState({ status: 'error', message: error.message });
     }
+  }
+
+  function cancelLocalImage() {
+    if (!selectedLocalImage) return;
+    if (selectedLocalImage.uploadStarted && !window.confirm(
+      'La carga pudo completarse aunque no llegara una confirmación. Si cancelas, el archivo podría quedar pendiente en Storage. ¿Cancelar selección?',
+    )) return;
+    setSelectedLocalImage(null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+    setImageState({ status: 'idle', message: '' });
   }
 
   async function handleDeleteImage(imagen) {
@@ -193,10 +326,10 @@ function AdminObras() {
               <tbody>
                 {obras.map((obra) => (
                   <tr key={obra.id} className={selectedObraId === obra.id ? styles.selectedRow : ''}>
-                    <td><strong>{obra.nombre}</strong><small>{obra.moneda}</small></td>
-                    <td>{formatPrice(obra.precio, obra.moneda)}</td>
-                    <td><span className={styles.status}>{obra.estado}</span></td>
-                    <td>{obra.fechaPublicacion}</td>
+                    <td data-label="Obra"><strong>{obra.nombre}</strong><small>{obra.moneda}</small></td>
+                    <td data-label="Precio">{formatPrice(obra.precio, obra.moneda)}</td>
+                    <td data-label="Estado"><span className={styles.status}>{obra.estado}</span></td>
+                    <td data-label="Fecha">{obra.fechaPublicacion}</td>
                     <td className={styles.actions}>
                       <button type="button" onClick={() => startEdit(obra)}>Editar</button>
                       <button type="button" onClick={() => setSelectedObraId(obra.id)}>Imágenes</button>
@@ -228,12 +361,38 @@ function AdminObras() {
 
       <section className={styles.imagesSection}>
         <div className={styles.sectionHeading}><div><p className={styles.eyebrow}>Contenido visual</p><h2>Imágenes {selectedObra ? `de ${selectedObra.nombre}` : 'de la obra seleccionada'}</h2></div></div>
-        {!selectedObra && <p className={styles.muted}>Selecciona una obra para consultar o agregar sus imágenes.</p>}
-        {selectedObra && <div className={styles.imageLayout}>
-          <div className={styles.imageList}>{selectedImages.map((imagen) => <article className={styles.imageItem} key={imagen.id}><img src={imagen.urlImagen} alt={imagen.textoAlternativo} /><div><strong>{imagen.textoAlternativo}</strong><small>Orden {imagen.ordenVisualizacion} {imagen.esPrincipal && ' · Principal'}</small></div><button className={styles.dangerText} type="button" onClick={() => handleDeleteImage(imagen)}>Eliminar</button></article>)}{!selectedImages.length && <p className={styles.muted}>Esta obra aún no tiene imágenes.</p>}</div>
-          <form className={styles.imageForm} onSubmit={handleImageSubmit}><h3>Agregar imagen</h3><label>URL de imagen<input value={imagenForm.urlImagen} onChange={(event) => setImagenForm({ ...imagenForm, urlImagen: event.target.value })} type="url" required /></label>{imagenForm.urlImagen && <img className={styles.imagePreview} src={imagenForm.urlImagen} alt="Vista previa de la nueva imagen" />}<label>Texto alternativo<input value={imagenForm.textoAlternativo} onChange={(event) => setImagenForm({ ...imagenForm, textoAlternativo: event.target.value })} maxLength="300" required /></label><label>Orden de visualización<input value={imagenForm.ordenVisualizacion} onChange={(event) => setImagenForm({ ...imagenForm, ordenVisualizacion: event.target.value })} type="number" min="0" required /></label><label className={styles.checkbox}><input checked={imagenForm.esPrincipal} onChange={(event) => setImagenForm({ ...imagenForm, esPrincipal: event.target.checked })} type="checkbox" /> Imagen principal</label><button className={styles.primaryButton} type="submit" disabled={imageState.status === 'loading'}>{imageState.status === 'loading' ? 'Guardando...' : 'Agregar imagen'}</button>{imageState.message && <p className={imageState.status === 'error' ? styles.error : styles.success}>{imageState.message}</p>}</form>
-        </div>}
+        <div className={styles.imageLayout}>
+          <div className={styles.imageList}>
+            {selectedObra
+              ? selectedImages.map((imagen) => <article className={styles.imageItem} key={imagen.id}><img src={imagen.urlImagen} alt={`Imagen de ${selectedObra.nombre}`} /><div><strong>{imagen.esPrincipal ? 'Imagen principal' : `Imagen ${imagen.ordenVisualizacion}`}</strong><small>Orden {imagen.ordenVisualizacion}</small></div><button className={styles.dangerText} type="button" onClick={() => handleDeleteImage(imagen)}>Eliminar</button></article>)
+              : <p className={styles.muted}>Selecciona una obra para consultar o agregar sus imágenes.</p>}
+            {selectedObra && !selectedImages.length && <p className={styles.muted}>Esta obra aún no tiene imágenes.</p>}
+          </div>
+          <form className={`${styles.imageForm} ${!selectedObra ? styles.imageFormDisabled : ''}`} onSubmit={handleImageSubmit}>
+            <h3>Agregar imagen</h3>
+            <fieldset disabled={!selectedObra || imageState.status === 'loading'}>
+              <label>Seleccionar desde este dispositivo<input ref={fileInputRef} accept="image/jpeg,image/png,image/webp" disabled={Boolean(pendingStorageImage)} onChange={handleImageFileChange} type="file" /></label>
+              <p className={styles.fileHint}>JPG, PNG o WebP · máximo {MAX_GALLERY_IMAGE_SIZE / (1024 * 1024)} MB</p>
+              {selectedLocalImage && <div className={styles.selectedFile}><span>{selectedLocalImage.file.name}</span><small>{(selectedLocalImage.file.size / (1024 * 1024)).toFixed(2)} MB</small><button className={styles.dangerText} onClick={cancelLocalImage} type="button">Cancelar selección</button></div>}
+              {pendingStorageImage && <p className={styles.pendingUpload} role="status">Archivo subido a Gallery ({pendingStorageImage.path}). Los metadatos siguen pendientes; reintenta para registrarlos sin volver a subir.</p>}
+              {(localPreviewUrl || pendingStorageImage?.publicUrl || imagenForm.urlImagen) && <img className={styles.imagePreview} src={pendingStorageImage?.publicUrl || localPreviewUrl || imagenForm.urlImagen} alt={`Vista previa de ${selectedObra?.nombre || 'la imagen seleccionada'}`} />}
+              {!hasPrimaryImage && <label className={styles.checkbox}><input checked={imagenForm.esPrincipal} onChange={(event) => setImagenForm({ ...imagenForm, esPrincipal: event.target.checked })} type="checkbox" /> Imagen principal</label>}
+              <button className={styles.primaryButton} type="submit" disabled={imageState.status === 'loading'}>{imageState.status === 'loading' ? imageState.message : pendingStorageImage ? 'Reintentar registro' : selectedLocalImage ? 'Subir y agregar imagen' : 'Agregar imagen'}</button>
+            </fieldset>
+            {selectedObra && imageState.message && <p className={imageState.status === 'error' ? styles.error : styles.success} role={imageState.status === 'error' ? 'alert' : 'status'}>{imageState.message}</p>}
+          </form>
+        </div>
       </section>
+
+      {imageSuccessOpen && <div className={styles.successOverlay}>
+        <section aria-labelledby="image-success-title" aria-modal="true" className={styles.successDialog} role="dialog">
+          <span aria-hidden="true" className={styles.successMark}>✓</span>
+          <p className={styles.eyebrow}>Contenido visual actualizado</p>
+          <h2 id="image-success-title">Imagen subida con éxito</h2>
+          <p>La imagen ya está disponible en la galería de {selectedObra?.nombre || 'la obra'}.</p>
+          <button autoFocus className={styles.primaryButton} onClick={() => setImageSuccessOpen(false)} type="button">Continuar</button>
+        </section>
+      </div>}
     </main>
   );
 }
